@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<title>AGS Community | Guild Glory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<style>
+:root {
+    --bg: #050505;
+    --surface: #111111;
+    --surface-2: #1a1a1a;
+    --surface-3: #222222;
+    --border: rgba(255,255,255,.08);
+    --border-glow: rgba(255,255,255,.2);
+    --white: #ffffff;
+    --white-dim: rgba(255,255,255,.6);
+    --white-muted: rgba(255,255,255,.3);
+    --white-faint: rgba(255,255,255,.05);
+    --accent: #ffffff;
+    --lime: #4ade80;
+    --amber: #fbbf24;
+    --red: #f87171;
+    --blue: #60a5fa;
+    --violet: #a78bfa;
+    --text: #f0f0f0;
+    --text-dim: rgba(240,240,240,.5);
+    --text-muted: rgba(240,240,240,.25);
+    --r-sm: 12px;
+    --r-md: 18px;
+    --r-lg: 22px;
+    --r-xl: 28px;
+    --nav-h: 72px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { min-height: 100%; background: var(--bg); color: var(--text); font-family: Inter, system-ui, sans-serif; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+body { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+
+/* GLORY ANIMATION */
+.glory-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    margin: 20px 0 30px;
+    background: linear-gradient(90deg, #fff, #888, #fff);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gloryShine 3s linear infinite;
+    text-transform: uppercase;
+    text-shadow: 0 0 20px rgba(255,255,255,0.1);
+}
+@keyframes gloryShine { to { background-position: 200% center; } }
+
+/* APP SHELL */
+#app { display: none; position: relative; }
+.shell { max-width: 1440px; margin: 0 auto; padding: 16px 16px calc(var(--nav-h) + 16px + env(safe-area-inset-bottom, 0px)); }
+
+/* TOPBAR */
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--border); margin-bottom: 16px; }
+.brand-block { display: flex; align-items: center; gap: 12px; }
+.brand-mark { width: 44px; height: 44px; border-radius: 14px; background: var(--white); display: flex; align-items: center; justify-content: center; font-size: 20px; color: #000; flex-shrink: 0; }
+.brand-name-main { font-size: 18px; font-weight: 900; letter-spacing: -.2px; color: var(--white); }
+.brand-tag { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+.live-pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; color: var(--lime); }
+.live-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--lime); animation: pulse 1.4s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.6)} }
+
+/* BUTTONS */
+.btn { padding: 10px 14px; border-radius: var(--r-sm); border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font-size: 12px; font-weight: 700; cursor: pointer; transition: .2s; display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
+.btn:hover { background: var(--surface-3); border-color: var(--border-glow); transform: translateY(-1px); }
+.btn-primary { border-color: transparent; color: #000; background: var(--white); }
+.btn-primary:hover { background: #e8e8e8; }
+.btn-success { border-color: rgba(74,222,128,.25); color: var(--lime); background: rgba(74,222,128,.08); }
+
+/* STATS */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+.stat-card { padding: 18px 16px; border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--border); transition: .2s; }
+.stat-card:hover { border-color: var(--border-glow); }
+.stat-label { display: block; font-size: 10px; font-weight: 700; letter-spacing: .5px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; }
+.stat-value { font-size: 24px; font-weight: 900; color: var(--white); line-height: 1; margin-bottom: 6px; letter-spacing: -.5px; }
+.stat-foot { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+
+/* SLOTS GRID */
+.slots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; margin-bottom: 20px; }
+.slot-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-xl); padding: 20px; cursor: pointer; transition: .3s; position: relative; overflow: hidden; }
+.slot-card:hover { border-color: var(--border-glow); transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,.5); }
+.slot-card.active { border-color: var(--white); box-shadow: 0 0 20px rgba(255,255,255,.1); }
+.slot-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.slot-title { font-size: 16px; font-weight: 800; color: var(--white); }
+.slot-guild { font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+.slot-members { display: flex; gap: 8px; flex-wrap: wrap; }
+.member-av { width: 40px; height: 40px; border-radius: 10px; background: var(--surface-3); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--text-dim); font-weight: 700; position: relative; }
+.member-av.online { border-color: var(--lime); color: var(--lime); }
+
+/* BOT DETAILS PANEL */
+.bot-details-panel { display: none; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-xl); padding: 20px; margin-bottom: 20px; animation: slideDown .3s ease; }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+.bot-details-panel.active { display: block; }
+.bot-details-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+.bot-details-title { font-size: 18px; font-weight: 800; color: var(--white); }
+
+/* ACCOUNT CARDS */
+.account-card { padding: 18px; margin-bottom: 10px; border-radius: var(--r-lg); background: var(--surface-2); border: 1px solid var(--border); transition: .2s; position: relative; }
+.account-card:hover { border-color: var(--border-glow); background: var(--surface-3); }
+.acc-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+.acc-id { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.acc-avatar { position: relative; width: 46px; height: 46px; flex-shrink: 0; }
+.acc-avatar-core { position: absolute; inset: 2px; border-radius: 12px; background: var(--surface-3); display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 17px; }
+.acc-level { position: absolute; right: -6px; bottom: -6px; padding: 2px 6px; border-radius: 6px; font-size: 9px; font-weight: 900; font-family: 'JetBrains Mono', monospace; color: #000; background: var(--white); border: 2px solid var(--surface-2); }
+.acc-name { font-size: 14px; font-weight: 800; color: var(--white); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 7px; }
+.acc-region { padding: 2px 6px; border-radius: 6px; font-size: 9px; font-weight: 800; letter-spacing: .5px; color: var(--violet); background: rgba(167,139,250,.12); border: 1px solid rgba(167,139,250,.22); }
+.acc-uid { display: flex; align-items: center; gap: 6px; margin-top: 5px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .5px; flex-wrap: wrap; }
+
+/* PROGRESS & METRICS */
+.acc-metrics { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 12px; }
+.metric-box { padding: 11px 12px; border-radius: var(--r-sm); background: var(--surface); border: 1px solid var(--border); transition: .2s; }
+.metric-box span { display: block; color: var(--text-muted); font-size: 8px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; }
+.metric-box strong { display: block; font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: var(--text); }
+.metric-box.gain strong { color: var(--lime); }
+.progress-block { padding: 12px 14px; border-radius: var(--r-sm); background: var(--surface); border: 1px solid var(--border); margin-bottom: 12px; }
+.progress-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 10px; color: var(--text-muted); letter-spacing: .3px; flex-wrap: wrap; gap: 4px; }
+.progress-top b { color: var(--white); font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+.progress-track { height: 7px; border-radius: 100px; background: rgba(255,255,255,.07); overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, rgba(255,255,255,.4), var(--white)); transition: width .8s cubic-bezier(.2,.9,.2,1); }
+.progress-bot { display: flex; justify-content: space-between; margin-top: 6px; font-size: 9px; font-family: 'JetBrains Mono', monospace; color: var(--text-muted); flex-wrap: wrap; gap: 4px; }
+.progress-bot .pct { color: var(--white); font-weight: 800; }
+
+/* MODALS */
+.modal-bg { position: fixed; inset: 0; z-index: 5000; display: none; align-items: flex-end; justify-content: center; padding: 0; background: rgba(0,0,0,.8); backdrop-filter: blur(12px); }
+.modal-bg.active { display: flex; }
+.modal-card { width: 100%; max-width: 520px; padding: 28px 24px calc(28px + env(safe-area-inset-bottom, 0px)); border-radius: 28px 28px 0 0; background: var(--surface); border: 1px solid var(--border); border-bottom: none; animation: slideUp .3s cubic-bezier(.2,.9,.2,1); max-height: 92vh; overflow-y: auto; }
+@keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+.modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
+.modal-head h3 { font-size: 17px; font-weight: 900; color: var(--white); display: flex; align-items: center; gap: 8px; }
+.modal-close { width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text-muted); cursor: pointer; transition: .2s; display: flex; align-items: center; justify-content: center; }
+.field-block { margin-bottom: 16px; }
+.field-block label { display: block; margin-bottom: 7px; color: var(--text-muted); font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; }
+.field-input, .field-select { width: 100%; padding: 13px 14px; border-radius: var(--r-md); border: 1px solid var(--border); background: var(--surface-2); color: var(--white); font-family: 'JetBrains Mono', monospace; font-size: 13px; outline: none; transition: .2s; }
+.field-input:focus, .field-select:focus { border-color: var(--border-glow); background: var(--surface-3); }
+.modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+.modal-actions .btn { flex: 1; min-width: 120px; justify-content: center; }
+
+/* CONSOLE */
+.console-panel { display: flex; flex-direction: column; min-height: 400px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-xl); overflow: hidden; }
+.console-body { flex: 1; margin: 12px 14px; padding: 14px; border-radius: var(--r-md); background: var(--surface-2); border: 1px solid var(--border); overflow-y: auto; font: 10.5px/1.75 'JetBrains Mono', monospace; }
+.log-line { display: flex; gap: 10px; margin-bottom: 4px; word-break: break-word; }
+.log-ts { color: var(--text-muted); flex-shrink: 0; font-weight: 500; }
+.log-msg { color: rgba(240,240,240,.65); }
+.log-msg.success { color: var(--lime); }
+.log-msg.warning { color: var(--amber); }
+.log-msg.error { color: var(--red); }
+.log-msg.info { color: var(--blue); }
+
+/* NAVIGATION */
+.mobile-nav { display: none; }
+@media(max-width:800px) {
+    .shell { padding: 12px 12px 0; }
+    .stats { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .slots-grid { grid-template-columns: 1fr; }
+    .mobile-nav { position: fixed; bottom: 0; left: 0; right: 0; height: calc(var(--nav-h) + env(safe-area-inset-bottom, 0px)); z-index: 4000; display: flex; align-items: flex-start; justify-content: space-around; padding: 8px 8px 0; background: rgba(18,18,18,.96); border-top: 1px solid var(--border); backdrop-filter: blur(20px); }
+    .nav-btn { flex: 1; border: 0; background: none; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 9px; font-weight: 700; letter-spacing: .3px; padding: 8px 4px; border-radius: var(--r-sm); cursor: pointer; transition: .2s; }
+    .nav-btn i { font-size: 20px; }
+    .nav-btn.active { color: var(--white); }
+    .mobile-tab { display: none; }
+    .mobile-tab.active { display: block; }
+    .console-panel.mobile-tab.active { display: flex; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<section id="login-screen" style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--bg);">
+    <div class="login-card" style="width:100%;max-width:400px;padding:40px 32px;border-radius:var(--r-xl);background:var(--surface);border:1px solid var(--border);text-align:center;">
+        <div style="width:64px;height:64px;border-radius:20px;background:var(--white);display:flex;align-items:center;justify-content:center;font-size:28px;color:#000;margin:0 auto 20px;"><i class="fa-solid fa-bolt"></i></div>
+        <div style="font-size:26px;font-weight:900;color:var(--white);margin-bottom:4px;">AGS COMMUNITY</div>
+        <div style="font-size:12px;font-weight:600;letter-spacing:.5px;color:var(--text-muted);text-transform:uppercase;margin-bottom:30px;">Guild Glory Engine</div>
+        <form onsubmit="login(event)">
+            <div style="position:relative;margin-bottom:12px;">
+                <input id="login-key" style="width:100%;padding:16px 46px;border-radius:var(--r-md);border:1px solid var(--border);background:var(--surface-2);color:var(--white);font-family:'JetBrains Mono',monospace;font-size:14px;letter-spacing:2px;outline:none;" type="password" placeholder="ENTER ACCESS KEY" autocomplete="off">
+            </div>
+            <div id="login-error" style="min-height:18px;text-align:center;margin-top:8px;color:var(--red);font-size:12px;font-weight:700;"></div>
+            <button class="btn btn-primary" style="width:100%;padding:17px;justify-content:center;font-size:14px;font-weight:800;margin-top:4px;" type="submit">
+                <i class="fa-solid fa-shield-halved"></i> Sign In
+            </button>
+        </form>
+    </div>
+</section>
+
+<!-- APP -->
+<div id="app">
+<div class="shell">
+    <!-- TOPBAR -->
+    <header class="topbar">
+        <div class="brand-block">
+            <div class="brand-mark"><i class="fa-solid fa-bolt"></i></div>
+            <div>
+                <div class="brand-name-main">AGS | x64</div>
+                <div class="brand-tag">
+                    <span class="live-pill"><span class="dot"></span>ONLINE</span>
+                    <span class="brand-tag-text" style="color:var(--text-muted);font-size:11px;font-weight:600;">Team Engine</span>
+                </div>
+            </div>
+        </div>
+        <div style="display:flex;gap:8px;">
+            <button class="btn" onclick="fetchStats()"><i class="fa-solid fa-rotate"></i><span class="hide-sm"> Refresh</span></button>
+            <button class="btn btn-success" onclick="openCreateTeamModal()"><i class="fa-solid fa-users-gear"></i><span class="hide-sm"> Create Team</span></button>
+            <button class="btn" onclick="logoutSession()" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+    </header>
+
+    <!-- GLORY TITLE -->
+    <div class="glory-title">AGS Community Guild Glory</div>
+
+    <!-- STATS -->
+    <section class="stats">
+        <div class="stat-card">
+            <div class="stat-label">Accounts</div>
+            <div class="stat-value" id="stat-accounts">0</div>
+            <div class="stat-foot" id="stat-online">0 Online</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Matches</div>
+            <div class="stat-value" id="stat-completed">0</div>
+            <div class="stat-foot" id="stat-active-matches">0 Active</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Total EXP</div>
+            <div class="stat-value" id="stat-exp">+0</div>
+            <div class="stat-foot" id="stat-exp-rate">~0 EXP/hr</div>
+        </div>
+    </section>
+
+    <!-- SLOTS GRID -->
+    <div class="slots-grid" id="slots-grid">
+        <div class="empty-state" style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted);">
+            <i class="fa-solid fa-circle-notch fa-spin" style="font-size:24px;margin-bottom:10px;"></i>
+            <p>Loading Slots...</p>
+        </div>
+    </div>
+
+    <!-- BOT DETAILS PANEL (Hidden by default) -->
+    <div class="bot-details-panel" id="bot-details-panel">
+        <div class="bot-details-head">
+            <div class="bot-details-title" id="details-title">Slot 1 - Guild ID: 123456</div>
+            <button class="btn" onclick="closeDetails()"><i class="fa-solid fa-xmark"></i> Close</button>
+        </div>
+        <div id="details-accounts-container">
+            <!-- Accounts will be injected here -->
+        </div>
+    </div>
+
+    <!-- CONSOLE -->
+    <div class="console-panel mobile-tab active" id="tab-console">
+        <div style="padding:18px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:36px;height:36px;border-radius:10px;background:var(--white-faint);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;"><i class="fa-solid fa-terminal"></i></div>
+                <h3 style="font-size:15px;font-weight:800;color:var(--white);">Live Console</h3>
+            </div>
+            <button class="btn" onclick="clearLogs()"><i class="fa-solid fa-trash"></i></button>
+        </div>
+        <div class="console-body" id="console-stream"></div>
+    </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="mobile-nav">
+    <button class="nav-btn active" onclick="switchTab('console', this)">
+        <i class="fa-solid fa-terminal"></i>Console
+    </button>
+    <button class="nav-btn" onclick="openCreateTeamModal()">
+        <i class="fa-solid fa-plus"></i>New Team
+    </button>
+</nav>
+
+</div>
+
+<!-- CREATE TEAM MODAL -->
+<div class="modal-bg" id="team-modal">
+    <div class="modal-card">
+        <div class="modal-head">
+            <h3><i class="fa-solid fa-users-gear"></i>Create New Squad</h3>
+            <button class="modal-close" onclick="closeCreateTeamModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form onsubmit="submitCreateTeam(event)">
+            <div class="field-block">
+                <label>Region</label>
+                <select class="field-select" id="team-region">
+                    <option value="BD">BD — Bangladesh</option>
+                    <option value="IND">IND — India</option>
+                    <option value="ID">ID — Indonesia</option>
+                </select>
+            </div>
+            <div class="field-block">
+                <label>Clan / Guild ID</label>
+                <input id="team-clan" class="field-input" type="text" placeholder="e.g. 3105458988" value="3105458988">
+            </div>
+            <div class="field-block">
+                <label>Squad Size</label>
+                <select class="field-select" id="team-count">
+                    <option value="4" selected>4 Bots (Full Team)</option>
+                    <option value="3">3 Bots</option>
+                    <option value="2">2 Bots</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn" onclick="closeCreateTeamModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="btn-create-team"><i class="fa-solid fa-bolt"></i> Create & Start</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+const ACCESS_KEY = "holic";
+const SESSION_KEY = "holic";
+const EXP_TABLE = {1:0,2:48,3:202,4:544,5:1012,6:1844,7:2792,8:3800,9:4870,10:6004,11:7192,12:8448,13:9760,14:11140,15:12566,16:14060,17:15610,18:17224,19:18902,20:20632,21:22424,22:24278,23:26192,24:28166,25:30200,26:32294,27:34448,28:37804,29:41274,30:44870,31:48582,32:53394,33:58566,34:64096,35:69994,36:76460,37:83506,38:91128,39:99322,40:108092,41:120144,42:133266,43:147472,44:162760,45:179126,46:196572,47:215368,48:235516,49:257010,50:279860,51:304056,52:348318,53:394982,54:444044,55:495508,56:549364,57:633756,58:721744,59:813336,60:908522,61:1041438,62:1180352,63:1325266,64:1476184,65:1634300,66:1840946,67:2056594,68:2281242,69:2514880,70:2757530,71:3059506,72:3372284,73:3699456,74:4041030,75:4397002,76:4829104,77:5282204,78:5756304,79:6251408,80:6776502,81:7381324,82:8043154,83:8752982,84:9510808,85:10316338,86:11277190,87:12291748,88:13360304,89:14482858,90:15659418,91:17026708,92:18453950,93:19941280,94:21488570,95:23095858,96:24763138,97:26490428,98:28378704,99:30124996,100:32032884};
+
+let cachedAccounts = [];
+let cachedLogs = [];
+let clientStart = Date.now();
+
+function unlockApp(isRestore){
+    const sc = document.getElementById("login-screen");
+    const app = document.getElementById("app");
+    if(isRestore){
+        if(sc) sc.style.display = "none";
+        if(app) app.style.display = "block";
+        fetchStats();
+        setInterval(fetchStats, 3000);
+        return;
+    }
+    sc.style.transition = "opacity .4s";
+    sc.style.opacity = "0";
+    setTimeout(()=>{
+        sc.style.display = "none";
+        app.style.display = "block";
+        fetchStats();
+        setInterval(fetchStats, 3000);
+    }, 400);
+}
+
+(function checkSavedSession(){
+    try {
+        const saved = localStorage.getItem(SESSION_KEY);
+        if(saved === ACCESS_KEY){
+            if(document.readyState === "loading"){
+                document.addEventListener("DOMContentLoaded", ()=> unlockApp(true));
+            } else { unlockApp(true); }
+        }
+    } catch(e){}
+})();
+
+function login(e){
+    e.preventDefault();
+    const inp = document.getElementById("login-key");
+    const err = document.getElementById("login-error");
+    const key = inp.value.trim();
+    if(key === ACCESS_KEY){
+        err.innerText = "";
+        try { localStorage.setItem(SESSION_KEY, key); } catch(ex){}
+        unlockApp(false);
+    } else {
+        err.innerText = "✕ Invalid access key";
+        inp.value = "";
+    }
+}
+
+function logoutSession(){
+    if(!confirm("Logout?")) return;
+    try { localStorage.removeItem(SESSION_KEY); } catch(e){}
+    location.reload();
+}
+
+function openCreateTeamModal(){ document.getElementById("team-modal").classList.add("active"); }
+function closeCreateTeamModal(){ document.getElementById("team-modal").classList.remove("active"); }
+
+async function submitCreateTeam(e){
+    e.preventDefault();
+    const region = document.getElementById("team-region").value;
+    const clan = document.getElementById("team-clan").value.trim();
+    const count = parseInt(document.getElementById("team-count").value, 10);
+    const btn = document.getElementById("btn-create-team");
+    
+    if(!clan){ alert("Clan ID is required"); return; }
+    
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Creating...';
+    
+    try {
+        const r = await fetch("/api/create_team", {
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body: JSON.stringify({region, clan_id: clan, count, password: "AGS_COMMUNITY"})
+        });
+        const d = await r.json();
+        if(d.ok){
+            closeCreateTeamModal();
+            setTimeout(fetchStats, 3000);
+            setTimeout(fetchStats, 8000);
+        } else {
+            alert("Failed: " + (d.error || "Unknown"));
+        }
+    } catch(err){ alert("Network error"); }
+    
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-bolt"></i> Create & Start';
+}
+
+async function fetchStats(){
+    try {
+        const r = await fetch("/api/stats", {cache:"no-store"});
+        const d = await r.json();
+        const accs = Array.isArray(d.accounts) ? d.accounts : [];
+        const logs = Array.isArray(d.logs) ? d.logs : [];
+        
+        document.getElementById("stat-accounts").innerText = d.total_accounts || accs.length;
+        document.getElementById("stat-completed").innerText = d.total_matches || 0;
+        document.getElementById("stat-exp").innerText = "+" + Number(d.total_gained_exp || 0).toLocaleString();
+        
+        const online = accs.filter(a => a.status === "ONLINE" || a.status === "IN_MATCH").length;
+        document.getElementById("stat-online").innerText = online + " Online";
+        document.getElementById("stat-active-matches").innerText = (d.total_active_matches || 0) + " Active";
+        
+        cachedAccounts = accs;
+        cachedLogs = logs;
+        renderSlots(accs);
+        renderLogs(logs);
+    } catch(err){ console.error(err); }
+}
+
+function renderSlots(accounts){
+    const grid = document.getElementById("slots-grid");
+    
+    // Group by clan_id (Guild ID)
+    const squads = {};
+    accounts.forEach(acc => {
+        const gid = acc.clan_id || "Default";
+        if(!squads[gid]) squads[gid] = [];
+        squads[gid].push(acc);
+    });
+
+    const keys = Object.keys(squads);
+    
+    if(keys.length === 0){
+        grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted);">
+            <i class="fa-solid fa-ghost" style="font-size:32px;margin-bottom:10px;"></i>
+            <p>No Squads yet. Create one to start.</p>
+        </div>`;
+        return;
+    }
+
+    grid.innerHTML = "";
+    keys.forEach((gid, index) => {
+        const bots = squads[gid];
+        const card = document.createElement("div");
+        card.className = "slot-card";
+        card.onclick = () => showDetails(gid, bots);
+        
+        // Build member avatars
+        let memberHtml = "";
+        bots.forEach((b, i) => {
+            const isOnline = b.status === "ONLINE" || b.status === "IN_MATCH";
+            memberHtml += `<div class="member-av ${isOnline ? 'online' : ''}" title="${b.nickname}">${b.nickname ? b.nickname.charAt(0) : 'B'}</div>`;
+        });
+
+        card.innerHTML = `
+            <div class="slot-header">
+                <div class="slot-title">Slot ${index + 1}</div>
+                <div class="slot-guild"><i class="fa-solid fa-shield"></i> ${gid}</div>
+            </div>
+            <div class="slot-members">${memberHtml}</div>
+            <div style="margin-top:15px;font-size:11px;color:var(--text-muted);display:flex;justify-content:space-between;">
+                <span>${bots.length} Bots</span>
+                <span>Click to view details <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+function showDetails(gid, bots){
+    const panel = document.getElementById("bot-details-panel");
+    const title = document.getElementById("details-title");
+    const container = document.getElementById("details-accounts-container");
+    
+    title.innerHTML = `<i class="fa-solid fa-shield"></i> Squad — Guild ID: ${gid}`;
+    container.innerHTML = "";
+    
+    bots.forEach(acc => {
+        const card = document.createElement("div");
+        card.className = "account-card";
+        
+        const level = Math.max(1, parseInt(acc.level) || 1);
+        const curExp = Number(acc.current_exp || 0);
+        const paused = Boolean(acc.is_paused || acc.status === "PAUSED");
+        const status = paused ? "PAUSED" : (acc.status || "ONLINE");
+        
+        let statusClass = "online";
+        let statusText = status;
+        if(paused) { statusClass = "paused"; statusText = "PAUSED"; }
+        else if(status === "IN_MATCH") { statusClass = "match"; statusText = "IN MATCH"; }
+        else if(status === "SEARCHING") { statusClass = "search"; statusText = "SEARCHING"; }
+        
+        card.innerHTML = `
+            <div class="acc-head">
+                <div class="acc-id">
+                    <div class="acc-avatar">
+                        <div class="acc-avatar-core"><i class="fa-solid fa-gamepad"></i></div>
+                        <span class="acc-level">L${level}</span>
+                    </div>
+                    <div style="min-width:0">
+                        <div class="acc-name">${esc(acc.nickname || "Unknown")} <span class="acc-region">${esc(acc.region || "BD")}</span></div>
+                        <div class="acc-uid"><span>UID: ${esc(acc.uid)}</span></div>
+                    </div>
+                </div>
+                <div class="status-pill ${statusClass}"><span class="sdot"></span>${statusText}</div>
+            </div>
+            <div class="acc-metrics">
+                <div class="metric-box"><span>Initial</span><strong>${Number(acc.initial_exp || 0).toLocaleString()}</strong></div>
+                <div class="metric-box"><span>Current</span><strong>${curExp.toLocaleString()}</strong></div>
+                <div class="metric-box gain"><span>Gained</span><strong>+${Number(acc.gained_exp || 0).toLocaleString()}</strong></div>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+    
+    panel.classList.add("active");
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function closeDetails(){
+    document.getElementById("bot-details-panel").classList.remove("active");
+}
+
+function renderLogs(logs){
+    const stream = document.getElementById("console-stream");
+    stream.innerHTML = logs.map(l=>`
+        <div class="log-line">
+            <span class="log-ts">[${esc(l.time || "00:00:00")}]</span>
+            <span class="log-msg ${l.level || "info"}">${esc(l.message || "")}</span>
+        </div>
+    `).join("");
+    stream.scrollTop = stream.scrollHeight;
+}
+
+async function clearLogs(){
+    try {
+        await fetch("/api/logs/clear", {method:"POST"});
+        cachedLogs = [];
+        renderLogs([]);
+    } catch(e){}
+}
+
+function switchTab(name, btn){
+    document.querySelectorAll(".nav-btn").forEach(x=>x.classList.remove("active"));
+    if(btn) btn.classList.add("active");
+}
+
+function esc(s){
+    if(s === null || s === undefined) return "";
+    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+}
+</script>
+</body>
+</html>

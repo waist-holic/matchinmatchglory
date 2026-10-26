@@ -1,0 +1,72 @@
+{
+  "users": {
+    "admin": {
+      "username": "admin",
+      "display_name": "Admin",
+      "password_hash": "405879d377fd78c939fcdc7c4a1cde7b17f3e6acb2a0ae9626b8acde112fc717",
+      "role": "admin",
+      "basic_credits": 1000,
+      "premium_credits": 1000,
+      "max_groups": 20,
+      "created_at": 1792874926
+    }
+  },
+  "sessions": {},
+  "coupons": {},
+  "transactions": [],
+  "groups": {},
+  "activity_log": [],
+  "inbox": [],
+  "settings": {
+    "basic_credit_usd": 1.7,
+    "premium_credit_usd": 20.0,
+    "binance_pay_id": "854729104",
+    "telegram": "https://t.me/dg_drift",
+    "whatsapp": "https://wa.me/6282326562316",
+    "vapid_public_key": "BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjBJuBkr3qBUYIHBQFLXYp5Nksh8U",
+    "regions": [
+      {
+        "id": "ind",
+        "region_name": "India",
+        "code": "IND",
+        "tier": "basic",
+        "enabled": true
+      },
+      {
+        "id": "bd",
+        "region_name": "Bangladesh",
+        "code": "BD",
+        "tier": "basic",
+        "enabled": true
+      },
+      {
+        "id": "pk",
+        "region_name": "Pakistan",
+        "code": "PK",
+        "tier": "basic",
+        "enabled": true
+      },
+      {
+        "id": "id",
+        "region_name": "Indonesia",
+        "code": "ID",
+        "tier": "basic",
+        "enabled": true
+      },
+      {
+        "id": "me",
+        "region_name": "Middle East",
+        "code": "ME",
+        "tier": "premium",
+        "enabled": true
+      },
+      {
+        "id": "br",
+        "region_name": "Brasil",
+        "code": "BR",
+        "tier": "premium",
+        "enabled": true
+      }
+    ]
+  }
+}

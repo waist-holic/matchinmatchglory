@@ -1,0 +1,2009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<title>ANURAG | x64 — Command Center</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<style>
+:root {
+    /* ANURAG x Glory palette — deep charcoal, not pure black */
+    --bg: #0d0d0d;
+    --surface: #181818;
+    --surface-2: #1e1e1e;
+    --surface-3: #252525;
+    --border: rgba(255,255,255,.07);
+    --border-light: rgba(255,255,255,.04);
+
+    /* Single accent — white. Secondary accent for live/status only */
+    --white: #ffffff;
+    --white-dim: rgba(255,255,255,.6);
+    --white-muted: rgba(255,255,255,.28);
+    --white-faint: rgba(255,255,255,.06);
+
+    --accent: #ffffff;
+    --accent-2: #f0f0f0;
+    --lime: #4ade80;
+    --amber: #fbbf24;
+    --red: #f87171;
+    --blue: #60a5fa;
+    --violet: #a78bfa;
+
+    --text: #f0f0f0;
+    --text-dim: rgba(240,240,240,.5);
+    --text-muted: rgba(240,240,240,.28);
+
+    --r-sm: 12px;
+    --r-md: 18px;
+    --r-lg: 22px;
+    --r-xl: 28px;
+
+    --nav-h: 72px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+    min-height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, system-ui, sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Safe area for mobile */
+body {
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ==============================
+   LOGIN SCREEN
+============================== */
+#login-screen {
+    position: fixed; inset: 0; z-index: 9999;
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+    background: var(--bg);
+}
+
+.login-card {
+    width: 100%; max-width: 400px;
+    padding: 40px 32px;
+    border-radius: var(--r-xl);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    animation: cardRise .5s cubic-bezier(.2,.9,.2,1);
+}
+
+@keyframes cardRise {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: none; }
+}
+
+.login-logo-wrap {
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 28px;
+}
+
+.login-logo {
+    width: 64px; height: 64px;
+    border-radius: 20px;
+    background: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; color: #000;
+}
+
+.login-brand-name {
+    text-align: center;
+    font-size: 26px; font-weight: 900; letter-spacing: -.3px;
+    color: var(--white); margin-bottom: 4px;
+}
+
+.login-brand-sub {
+    text-align: center;
+    font-size: 12px; font-weight: 600; letter-spacing: .5px;
+    color: var(--text-muted); text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.login-live-pill {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    font-size: 11px; font-weight: 700; color: var(--lime);
+    margin-bottom: 32px;
+}
+.login-live-pill .ldot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--lime); animation: pulse 1.4s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.6)} }
+
+.field-wrap { position: relative; margin-bottom: 12px; }
+.field-wrap i.field-icon {
+    position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
+    color: var(--text-muted); font-size: 14px;
+}
+.key-input {
+    width: 100%; padding: 16px 48px 16px 46px;
+    border-radius: var(--r-md); border: 1px solid var(--border);
+    background: var(--surface-2); color: var(--white);
+    font-family: 'JetBrains Mono', monospace; font-size: 14px; letter-spacing: 2px;
+    outline: none; transition: .2s;
+}
+.key-input:focus {
+    border-color: rgba(255,255,255,.3);
+    background: var(--surface-3);
+}
+.key-eye {
+    position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+    background: none; border: 0; color: var(--text-muted); cursor: pointer;
+    padding: 6px; font-size: 14px; transition: .2s;
+}
+.key-eye:hover { color: var(--white); }
+
+.login-btn {
+    width: 100%; padding: 17px; border: 0; border-radius: var(--r-md);
+    cursor: pointer; font-size: 14px; font-weight: 800;
+    letter-spacing: .5px; color: #000;
+    background: var(--white);
+    transition: .2s; margin-top: 4px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.login-btn:hover { background: #e8e8e8; transform: translateY(-1px); }
+.login-btn:active { transform: translateY(0); }
+
+.login-err {
+    min-height: 18px; text-align: center; margin-top: 8px;
+    color: var(--red); font-size: 12px; font-weight: 700;
+}
+.login-foot {
+    margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border);
+    text-align: center; color: var(--text-muted); font-size: 11px;
+    line-height: 1.7; letter-spacing: .3px;
+}
+.login-foot strong { color: var(--white-dim); font-weight: 700; }
+
+/* ==============================
+   APP SHELL
+============================== */
+#app { display: none; position: relative; }
+
+.shell {
+    max-width: 1440px; margin: 0 auto;
+    padding: 16px 16px calc(var(--nav-h) + 16px + env(safe-area-inset-bottom, 0px));
+}
+
+/* ==============================
+   TOPBAR
+============================== */
+.topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; padding: 14px 16px;
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+}
+
+.brand-block { display: flex; align-items: center; gap: 12px; }
+.brand-mark {
+    width: 44px; height: 44px; border-radius: 14px;
+    background: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; color: #000; flex-shrink: 0;
+}
+.brand-name-main {
+    font-size: 18px; font-weight: 900; letter-spacing: -.2px; color: var(--white);
+}
+.brand-tag {
+    display: flex; align-items: center; gap: 8px; margin-top: 2px;
+}
+.live-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 700; color: var(--lime);
+}
+.live-pill .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--lime); animation: pulse 1.4s infinite;
+}
+.brand-tag-sep { color: var(--text-muted); font-size: 11px; }
+.brand-tag-text { color: var(--text-muted); font-size: 11px; font-weight: 600; }
+
+.top-actions { display: flex; gap: 8px; }
+
+/* ==============================
+   BUTTONS
+============================== */
+.btn {
+    padding: 10px 14px; border-radius: var(--r-sm);
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text); font-size: 12px; font-weight: 700;
+    cursor: pointer; transition: .2s;
+    display: inline-flex; align-items: center; gap: 7px;
+    white-space: nowrap;
+}
+.btn:hover { background: var(--surface-3); border-color: rgba(255,255,255,.15); }
+
+.btn-primary {
+    border-color: transparent;
+    color: #000; background: var(--white);
+}
+.btn-primary:hover { background: #e8e8e8; border-color: transparent; }
+
+.btn-success {
+    border-color: rgba(74,222,128,.25);
+    color: var(--lime); background: rgba(74,222,128,.08);
+}
+.btn-success:hover { background: rgba(74,222,128,.14); }
+
+/* ==============================
+   WELCOME CARD (ANURAG x Glory hero)
+============================== */
+.welcome-card {
+    padding: 22px 20px;
+    border-radius: var(--r-xl);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 16px;
+}
+.welcome-icon {
+    width: 52px; height: 52px; border-radius: 16px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; color: var(--white); flex-shrink: 0;
+}
+.welcome-text h2 {
+    font-size: 18px; font-weight: 800; color: var(--white);
+    margin-bottom: 4px;
+}
+.welcome-text p {
+    font-size: 13px; color: var(--text-dim); line-height: 1.5;
+}
+.welcome-text p strong { color: var(--white); font-weight: 700; }
+
+/* ==============================
+   STAT TILES (3-column grid)
+============================== */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.stat-card {
+    padding: 18px 16px;
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: .2s;
+}
+.stat-card:hover { border-color: rgba(255,255,255,.12); }
+
+.stat-label {
+    display: block;
+    font-size: 10px; font-weight: 700; letter-spacing: .5px;
+    color: var(--text-muted); text-transform: uppercase;
+    margin-bottom: 10px;
+}
+.stat-ic {
+    width: 36px; height: 36px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; color: var(--white);
+    background: var(--white-faint);
+    border: 1px solid var(--border);
+    margin-bottom: 12px;
+}
+.stat-card.violet .stat-ic { color: var(--violet); background: rgba(167,139,250,.08); border-color: rgba(167,139,250,.18); }
+.stat-card.lime .stat-ic   { color: var(--lime);   background: rgba(74,222,128,.08);  border-color: rgba(74,222,128,.18);  }
+.stat-card.pink .stat-ic   { color: #f472b6;        background: rgba(244,114,182,.08); border-color: rgba(244,114,182,.18); }
+.stat-card.amber .stat-ic  { color: var(--amber);   background: rgba(251,191,36,.08);  border-color: rgba(251,191,36,.18);  }
+
+.stat-value {
+    font-size: 24px; font-weight: 900; color: var(--white);
+    line-height: 1; margin-bottom: 6px; letter-spacing: -.5px;
+}
+.stat-card.violet .stat-value { color: var(--violet); }
+.stat-card.lime .stat-value   { color: var(--lime); }
+.stat-card.pink .stat-value   { color: #f472b6; }
+.stat-card.amber .stat-value  { color: var(--amber); }
+
+.stat-foot {
+    font-size: 11px; color: var(--text-muted); font-weight: 600;
+}
+
+/* ==============================
+   WORKSPACE (2 col on desktop)
+============================== */
+.workspace {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) 420px;
+    gap: 14px;
+}
+
+/* ==============================
+   PANELS
+============================== */
+.panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-xl);
+    overflow: hidden;
+}
+
+.panel-head {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border-light);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap;
+}
+.panel-title { display: flex; align-items: center; gap: 10px; }
+.panel-ic {
+    width: 36px; height: 36px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: var(--white);
+    background: var(--white-faint); border: 1px solid var(--border);
+}
+.panel-title h3 {
+    font-size: 15px; font-weight: 800; color: var(--white);
+    display: flex; align-items: center; gap: 8px;
+}
+.chip {
+    padding: 3px 9px; border-radius: 100px;
+    font-size: 10px; font-weight: 800;
+    color: var(--white-dim); background: var(--white-faint);
+    border: 1px solid var(--border); font-family: 'JetBrains Mono', monospace;
+}
+
+/* ==============================
+   SEARCH + FILTERS
+============================== */
+.controls {
+    padding: 14px 16px;
+    display: flex; gap: 10px; flex-wrap: wrap;
+    border-bottom: 1px solid var(--border-light);
+}
+.search { flex: 1; min-width: 200px; position: relative; }
+.search i {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    color: var(--text-muted); font-size: 13px;
+}
+.search input {
+    width: 100%; padding: 11px 14px 11px 38px;
+    border-radius: var(--r-sm); border: 1px solid var(--border);
+    background: var(--surface-2); color: var(--white); font-size: 13px;
+    outline: none; transition: .2s;
+}
+.search input:focus { border-color: rgba(255,255,255,.2); background: var(--surface-3); }
+.search input::placeholder { color: var(--text-muted); }
+
+.filters {
+    display: flex; gap: 4px; padding: 3px;
+    border-radius: var(--r-sm); background: var(--surface-2);
+    border: 1px solid var(--border);
+}
+.filter {
+    border: 0; background: transparent;
+    color: var(--text-muted); padding: 7px 12px;
+    border-radius: 9px; cursor: pointer;
+    font-size: 10px; font-weight: 800; letter-spacing: .5px; transition: .2s;
+}
+.filter.active {
+    color: var(--white); background: var(--surface-3);
+}
+.filter:hover:not(.active) { color: var(--white-dim); }
+
+/* ==============================
+   ACCOUNT CARDS
+============================== */
+.accounts-wrap {
+    max-height: 660px; overflow-y: auto; padding: 14px;
+}
+.accounts-wrap::-webkit-scrollbar { width: 4px; }
+.accounts-wrap::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 10px; }
+
+.account-card {
+    padding: 18px; margin-bottom: 10px;
+    border-radius: var(--r-lg);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    transition: .2s; position: relative;
+}
+.account-card:hover { border-color: rgba(255,255,255,.12); background: var(--surface-3); }
+
+.acc-head {
+    display: flex; align-items: center;
+    justify-content: space-between; gap: 10px;
+    margin-bottom: 14px; flex-wrap: wrap;
+}
+.acc-id { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.acc-avatar { position: relative; width: 46px; height: 46px; flex-shrink: 0; }
+.acc-avatar-ring {
+    position: absolute; inset: 0; border-radius: 14px;
+    background: conic-gradient(from 0deg, var(--white), rgba(255,255,255,.2), var(--white));
+    animation: ringrot 5s linear infinite; opacity: .5;
+}
+@keyframes ringrot { to { transform: rotate(360deg); } }
+.acc-avatar-core {
+    position: absolute; inset: 2px; border-radius: 12px;
+    background: var(--surface-3);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--white); font-size: 17px;
+}
+.acc-level {
+    position: absolute; right: -6px; bottom: -6px;
+    padding: 2px 6px; border-radius: 6px; font-size: 9px; font-weight: 900;
+    font-family: 'JetBrains Mono', monospace;
+    color: #000; background: var(--white);
+    border: 2px solid var(--surface-2);
+}
+.acc-name {
+    font-size: 14px; font-weight: 800; color: var(--white);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    display: flex; align-items: center; gap: 7px;
+}
+.acc-region {
+    padding: 2px 6px; border-radius: 6px; font-size: 9px; font-weight: 800;
+    letter-spacing: .5px; color: var(--violet);
+    background: rgba(167,139,250,.12); border: 1px solid rgba(167,139,250,.22);
+}
+.acc-uid {
+    display: flex; align-items: center; gap: 6px; margin-top: 5px;
+    color: var(--text-muted); font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: .5px; flex-wrap: wrap;
+}
+.copy-btn {
+    border: 0; background: none; color: var(--text-muted);
+    cursor: pointer; padding: 2px; transition: .2s;
+}
+.copy-btn:hover { color: var(--white); }
+.acc-uptime { color: var(--white-dim); font-family: 'JetBrains Mono', monospace; font-size: 10px; display: inline-flex; align-items: center; gap: 4px; }
+
+/* Status pills */
+.status-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 11px; border-radius: 100px; font-size: 9px;
+    font-weight: 800; letter-spacing: .5px; border: 1px solid; text-transform: uppercase; flex-shrink: 0;
+}
+.status-pill .sdot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; animation: pulse 1.6s infinite; }
+.status-online  { color: var(--lime);   background: rgba(74,222,128,.08);  border-color: rgba(74,222,128,.25);  }
+.status-match   { color: #60a5fa;       background: rgba(96,165,250,.08);  border-color: rgba(96,165,250,.3);   }
+.status-search  { color: var(--amber);  background: rgba(251,191,36,.07);  border-color: rgba(251,191,36,.25);  }
+.status-paused  { color: var(--amber);  background: rgba(251,191,36,.07);  border-color: rgba(251,191,36,.25);  }
+.status-error   { color: var(--red);    background: rgba(248,113,113,.07); border-color: rgba(248,113,113,.25); }
+
+/* Metrics */
+.acc-metrics {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 12px;
+}
+.metric-box {
+    padding: 11px 12px; border-radius: var(--r-sm);
+    background: var(--surface); border: 1px solid var(--border-light); transition: .2s;
+}
+.metric-box:hover { background: var(--surface-3); }
+.metric-box span {
+    display: block; color: var(--text-muted); font-size: 8px;
+    font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px;
+}
+.metric-box strong {
+    display: block; font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; font-weight: 700; color: var(--text);
+}
+.metric-box.gain strong { color: var(--lime); }
+
+/* Progress */
+.progress-block {
+    padding: 12px 14px; border-radius: var(--r-sm);
+    background: var(--surface); border: 1px solid var(--border-light);
+    margin-bottom: 12px;
+}
+.progress-top {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px; font-size: 10px; color: var(--text-muted);
+    letter-spacing: .3px; flex-wrap: wrap; gap: 4px;
+}
+.progress-top b { color: var(--white); font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+.progress-track {
+    height: 7px; border-radius: 100px;
+    background: rgba(255,255,255,.07); overflow: hidden;
+}
+.progress-fill {
+    height: 100%; border-radius: 100px;
+    background: linear-gradient(90deg, rgba(255,255,255,.4), var(--white));
+    transition: width .8s cubic-bezier(.2,.9,.2,1);
+}
+.progress-bot {
+    display: flex; justify-content: space-between; margin-top: 6px;
+    font-size: 9px; font-family: 'JetBrains Mono', monospace;
+    color: var(--text-muted); flex-wrap: wrap; gap: 4px;
+}
+.progress-bot .pct { color: var(--white); font-weight: 800; }
+
+/* Account footer */
+.acc-foot {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px; padding-top: 12px;
+    border-top: 1px solid var(--border-light); flex-wrap: wrap;
+}
+.acc-time {
+    color: var(--text-muted); font-size: 10px;
+    display: inline-flex; align-items: center; gap: 5px;
+}
+.acc-actions { display: flex; gap: 6px; }
+.act-btn {
+    width: 34px; height: 34px; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--surface);
+    color: var(--text-muted); cursor: pointer; font-size: 12px;
+    transition: .2s; display: flex; align-items: center; justify-content: center;
+}
+.act-btn:hover { color: var(--white); border-color: rgba(255,255,255,.18); background: var(--surface-3); }
+.act-btn.danger:hover { color: var(--red); border-color: rgba(248,113,113,.3); background: rgba(248,113,113,.07); }
+
+/* ==============================
+   CONSOLE PANEL
+============================== */
+.console-panel { display: flex; flex-direction: column; min-height: 700px; }
+.console-tools {
+    padding: 12px 16px; display: flex; justify-content: space-between;
+    align-items: center; gap: 10px; border-bottom: 1px solid var(--border-light); flex-wrap: wrap;
+}
+.console-filters { display: flex; gap: 4px; flex-wrap: wrap; }
+.cfilter {
+    padding: 6px 10px; border-radius: 8px;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--text-muted); cursor: pointer;
+    font-size: 9px; font-weight: 800; letter-spacing: .5px; transition: .2s;
+}
+.cfilter:hover { color: var(--white); }
+.cfilter.active { color: var(--white); background: var(--surface-3); border-color: rgba(255,255,255,.15); }
+
+.console-body {
+    flex: 1; margin: 12px 14px; padding: 14px;
+    border-radius: var(--r-md);
+    background: var(--surface-2); border: 1px solid var(--border-light);
+    overflow-y: auto;
+    font: 10.5px/1.75 'JetBrains Mono', monospace;
+}
+.console-body::-webkit-scrollbar { width: 4px; }
+.console-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 10px; }
+
+.log-line { display: flex; gap: 10px; margin-bottom: 4px; word-break: break-word; }
+.log-ts { color: var(--text-muted); flex-shrink: 0; font-weight: 500; }
+.log-msg { color: rgba(240,240,240,.65); }
+.log-msg.success { color: var(--lime); }
+.log-msg.warning { color: var(--amber); }
+.log-msg.error   { color: var(--red); }
+.log-msg.info    { color: var(--blue); }
+
+.console-foot {
+    padding: 10px 16px; border-top: 1px solid var(--border-light);
+    display: flex; justify-content: space-between; align-items: center;
+    color: var(--text-muted); font-size: 9px; letter-spacing: 1px;
+    text-transform: uppercase; font-weight: 700;
+}
+.console-foot .live-tag { display: inline-flex; align-items: center; gap: 5px; color: var(--lime); }
+
+/* ==============================
+   EMPTY STATE
+============================== */
+.empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+.empty-state i { font-size: 36px; color: rgba(255,255,255,.1); margin-bottom: 16px; display: block; }
+.empty-state p { font-size: 13px; margin-bottom: 16px; letter-spacing: .3px; }
+
+/* ==============================
+   STATS TAB (mobile analytics)
+============================== */
+.analytics-wrap { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+
+/* ==============================
+   IDS INFO TAB
+============================== */
+.id-card {
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: var(--r-md); padding: 14px 16px;
+    position: relative; transition: .2s;
+}
+.id-card:hover { border-color: rgba(255,255,255,.12); }
+.id-card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+.id-card-title { font-size: 13px; font-weight: 800; color: var(--white); letter-spacing: .3px; flex: 1; min-width: 0; }
+.id-card-region {
+    font-size: 10px; font-weight: 700; padding: 2px 8px;
+    border-radius: 6px; background: rgba(167,139,250,.12);
+    color: var(--violet); border: 1px solid rgba(167,139,250,.22); letter-spacing: .5px;
+}
+.id-field {
+    display: grid; grid-template-columns: 110px 1fr;
+    gap: 4px 10px; align-items: start; padding: 5px 0;
+    border-bottom: 1px solid var(--border-light);
+}
+.id-field:last-child { border-bottom: none; }
+.id-label { font-size: 9px; font-weight: 700; letter-spacing: .5px; color: var(--text-muted); text-transform: uppercase; padding-top: 2px; }
+.id-value { font-size: 10.5px; font-family: 'JetBrains Mono', monospace; color: var(--text); word-break: break-all; display: flex; align-items: flex-start; gap: 6px; }
+.id-value .copy-btn { flex-shrink: 0; margin-top: 1px; }
+.jwt-preview { font-size: 9.5px; color: var(--blue); word-break: break-all; }
+.id-card-num { position: absolute; top: 10px; right: 14px; font-size: 9px; font-weight: 700; color: var(--text-muted); letter-spacing: .5px; }
+
+/* ==============================
+   QUICK ACTIONS (mobile home)
+============================== */
+.quick-actions { margin-bottom: 16px; }
+.qa-title {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 14px; font-weight: 800; color: var(--white);
+    margin-bottom: 10px; padding: 0 2px;
+}
+.qa-grid { display: flex; flex-direction: column; gap: 8px; }
+.qa-card {
+    display: flex; align-items: center; gap: 14px;
+    padding: 18px 16px; border-radius: var(--r-lg);
+    background: var(--surface); border: 1px solid var(--border);
+    cursor: pointer; transition: .2s; text-decoration: none; color: inherit;
+}
+.qa-card:hover { border-color: rgba(255,255,255,.14); background: var(--surface-2); }
+.qa-card-icon {
+    width: 50px; height: 50px; border-radius: 14px;
+    background: var(--white); display: flex; align-items: center; justify-content: center;
+    font-size: 22px; color: #000; flex-shrink: 0;
+}
+.qa-card-icon.green { background: var(--lime); }
+.qa-card-text h4 { font-size: 15px; font-weight: 800; color: var(--white); margin-bottom: 2px; }
+.qa-card-text p  { font-size: 12px; color: var(--text-muted); }
+.qa-card-arrow { margin-left: auto; color: var(--text-muted); font-size: 16px; }
+
+/* ==============================
+   MODALS
+============================== */
+.modal-bg {
+    position: fixed; inset: 0; z-index: 5000;
+    display: none; align-items: flex-end; justify-content: center;
+    padding: 0;
+    background: rgba(0,0,0,.7); backdrop-filter: blur(12px);
+}
+.modal-bg.active { display: flex; }
+.modal-card {
+    width: 100%; max-width: 520px;
+    padding: 28px 24px calc(28px + env(safe-area-inset-bottom, 0px));
+    border-radius: 28px 28px 0 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    animation: slideUp .3s cubic-bezier(.2,.9,.2,1);
+    max-height: 92vh; overflow-y: auto;
+}
+@keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+.modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
+.modal-head h3 {
+    font-size: 17px; font-weight: 900; color: var(--white);
+    display: flex; align-items: center; gap: 8px;
+}
+.modal-head h3 i { color: var(--white-dim); }
+.modal-close {
+    width: 34px; height: 34px; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--surface-2);
+    color: var(--text-muted); cursor: pointer; transition: .2s;
+    display: flex; align-items: center; justify-content: center;
+}
+.modal-close:hover { color: var(--white); background: var(--surface-3); }
+
+.field-block { margin-bottom: 16px; }
+.field-block label {
+    display: block; margin-bottom: 7px;
+    color: var(--text-muted); font-size: 11px; font-weight: 700;
+    letter-spacing: .5px; text-transform: uppercase;
+}
+.field-input, .field-select, .field-textarea {
+    width: 100%; padding: 13px 14px;
+    border-radius: var(--r-md); border: 1px solid var(--border);
+    background: var(--surface-2); color: var(--white);
+    font-family: 'JetBrains Mono', monospace; font-size: 13px;
+    outline: none; transition: .2s;
+}
+.field-input:focus, .field-select:focus, .field-textarea:focus {
+    border-color: rgba(255,255,255,.2); background: var(--surface-3);
+}
+.field-select {
+    cursor: pointer; font-family: Inter, sans-serif;
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat; background-position: right 14px center; padding-right: 38px;
+}
+.field-select option { background: #1e1e1e; color: #fff; }
+.field-textarea { resize: vertical; min-height: 90px; }
+.field-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+.modal-actions .btn { flex: 1; min-width: 120px; justify-content: center; }
+.modal-info {
+    padding: 12px 14px; border-radius: var(--r-sm);
+    background: rgba(255,255,255,.04); border: 1px solid var(--border);
+    margin-bottom: 16px; font-size: 12px; color: var(--text-dim);
+    line-height: 1.6; display: flex; gap: 10px; align-items: flex-start;
+}
+.modal-info i { color: var(--white-dim); font-size: 14px; margin-top: 1px; flex-shrink: 0; }
+.modal-progress {
+    padding: 12px 14px; border-radius: var(--r-sm);
+    background: var(--surface-2); border: 1px solid var(--border);
+    margin-top: 14px; max-height: 200px; overflow-y: auto;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    line-height: 1.7; color: var(--text-dim); display: none;
+}
+.modal-progress.active { display: block; }
+.modal-progress .p-step { padding: 2px 0; display: flex; align-items: flex-start; gap: 7px; word-break: break-word; }
+.modal-progress .p-step .p-icon { flex-shrink: 0; width: 12px; text-align: center; }
+.modal-progress .p-step.ok   { color: var(--lime); }
+.modal-progress .p-step.err  { color: var(--red);  }
+.modal-progress .p-step.warn { color: var(--amber); }
+
+/* ==============================
+   TOAST
+============================== */
+.toast-wrap {
+    position: fixed; top: calc(20px + env(safe-area-inset-top, 0px)); right: 16px;
+    z-index: 10000; display: flex; flex-direction: column; gap: 8px; pointer-events: none;
+}
+.toast {
+    display: flex; align-items: center; gap: 10px;
+    min-width: 240px; max-width: 360px;
+    padding: 13px 16px; border-radius: var(--r-md);
+    background: var(--surface-3); border: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+    color: var(--white); font-size: 12px; font-weight: 700;
+    animation: toastIn .3s cubic-bezier(.2,.9,.2,1); pointer-events: auto;
+}
+.toast.success { border-color: rgba(74,222,128,.3); }
+.toast.success i { color: var(--lime); }
+.toast.error   { border-color: rgba(248,113,113,.3); }
+.toast.error   i { color: var(--red); }
+.toast.info    i { color: var(--blue); }
+@keyframes toastIn { from { opacity:0; transform: translateX(30px); } to { opacity:1; transform: none; } }
+
+/* ==============================
+   BOTTOM NAV
+============================== */
+.mobile-nav { display: none; }
+
+/* ==============================
+   DESKTOP RESPONSIVE
+============================== */
+@media(max-width:1300px) { .stats { grid-template-columns: repeat(3,1fr); } }
+@media(max-width:1100px) { .workspace { grid-template-columns: 1fr; } .console-panel { min-height: 500px; } }
+
+/* ==============================
+   MOBILE — full ANURAG x Glory layout
+============================== */
+@media(max-width:800px) {
+    .shell { padding: 12px 12px 0; }
+
+    /* Topbar slimmed */
+    .topbar { padding: 12px 14px; border-radius: var(--r-lg); margin-bottom: 12px; }
+    .brand-name-main { font-size: 15px; }
+    .top-actions { gap: 6px; }
+    .top-actions .btn .hide-sm { display: none; }
+    .top-actions .btn { padding: 9px 11px; }
+
+    /* Stats 2-col */
+    .stats { grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+    .stat-card { padding: 14px 12px; }
+    .stat-value { font-size: 20px; }
+    .stat-ic { width: 32px; height: 32px; font-size: 13px; margin-bottom: 10px; }
+
+    /* Search controls stack */
+    .controls { flex-direction: column; gap: 8px; }
+    .filters { overflow-x: auto; }
+    .filter { flex: 1; white-space: nowrap; }
+
+    /* Accounts scroll */
+    .accounts-wrap { padding: 10px; max-height: none; }
+    .account-card { padding: 14px; }
+
+    /* Bottom nav — ANURAG x Glory style */
+    .mobile-nav {
+        position: fixed; bottom: 0; left: 0; right: 0;
+        height: calc(var(--nav-h) + env(safe-area-inset-bottom, 0px));
+        z-index: 4000;
+        display: flex; align-items: flex-start; justify-content: space-around;
+        padding: 8px 8px 0;
+        background: rgba(18,18,18,.96);
+        border-top: 1px solid var(--border);
+        backdrop-filter: blur(20px);
+    }
+    .nav-btn {
+        flex: 1; border: 0; background: none; color: var(--text-muted);
+        display: flex; flex-direction: column; align-items: center; gap: 4px;
+        font-size: 9px; font-weight: 700; letter-spacing: .3px;
+        padding: 8px 4px; border-radius: var(--r-sm); cursor: pointer; transition: .2s;
+    }
+    .nav-btn i { font-size: 20px; }
+    .nav-btn.active { color: var(--white); }
+    .nav-btn.active i { color: var(--white); }
+
+    /* Tab system */
+    .mobile-tab { display: none; }
+    .mobile-tab.active { display: block; }
+    .console-panel.mobile-tab.active { display: flex; }
+    .workspace { display: block; padding-bottom: calc(var(--nav-h) + 12px + env(safe-area-inset-bottom, 0px)); }
+
+    /* Modal bottom sheet */
+    .modal-bg { align-items: flex-end; }
+    .toast-wrap { left: 12px; right: 12px; top: calc(12px + env(safe-area-inset-top, 0px)); }
+    .toast { max-width: none; min-width: 0; }
+    .field-grid-2 { grid-template-columns: 1fr; }
+
+    /* desktop-only sections */
+    .hide-desktop-only { display: none; }
+}
+
+/* Hide desktop panels on mobile that aren't the active tab */
+@media(min-width:801px) {
+    .mobile-nav { display: none !important; }
+    .mobile-tab { display: block !important; }
+    .console-panel.mobile-tab { display: flex !important; }
+    .quick-actions { display: none; }
+    .welcome-card { display: none; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ============================
+     LOGIN SCREEN
+============================= -->
+<section id="login-screen">
+    <div class="login-card">
+        <div class="login-logo-wrap">
+            <div class="login-logo"><i class="fa-solid fa-bolt"></i></div>
+        </div>
+        <div class="login-brand-name">ANURAG | x64</div>
+        <div class="login-brand-sub">Premium Glory Engine</div>
+        <div class="login-live-pill">
+            <span class="ldot"></span> Developer Zone
+        </div>
+        <form onsubmit="login(event)">
+            <div class="field-wrap">
+                <i class="fa-solid fa-key field-icon"></i>
+                <input id="login-key" class="key-input" type="password" placeholder="ENTER ACCESS KEY" autocomplete="off">
+                <button type="button" class="key-eye" onclick="toggleKey()"><i id="key-eye" class="fa-solid fa-eye"></i></button>
+            </div>
+            <div id="login-error" class="login-err"></div>
+            <button class="login-btn" type="submit">
+                <i class="fa-solid fa-shield-halved"></i> Sign In
+            </button>
+        </form>
+        <div class="login-foot">
+            Don't have access? Contact admin.<br>
+            <strong>ANURAG | x64 • Premium Engine</strong>
+        </div>
+    </div>
+</section>
+
+<!-- ============================
+     APP
+============================= -->
+<div id="app">
+
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<div class="shell">
+    <!-- Topbar -->
+    <header class="topbar">
+        <div class="brand-block">
+            <div class="brand-mark"><i class="fa-solid fa-bolt"></i></div>
+            <div>
+                <div class="brand-name-main">ANURAG | x64</div>
+                <div class="brand-tag">
+                    <span class="live-pill"><span class="dot"></span>ONLINE</span>
+                    <span class="brand-tag-sep hide-sm">•</span>
+                    <span class="brand-tag-text hide-sm">Team Engine</span>
+                </div>
+            </div>
+        </div>
+        <div class="top-actions">
+            <button class="btn" onclick="manualRefresh()"><i class="fa-solid fa-rotate"></i><span class="hide-sm"> Refresh</span></button>
+            <button class="btn btn-success" onclick="openCreateTeamModal()"><i class="fa-solid fa-users-gear"></i><span class="hide-sm"> Create Team</span></button>
+            <button class="btn btn-primary" onclick="openAddModal()"><i class="fa-solid fa-plus"></i><span class="hide-sm"> Add Account</span></button>
+            <button class="btn" onclick="logoutSession()" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+    </header>
+
+    <!-- Welcome Card — mobile home hero (hidden on desktop) -->
+    <div class="welcome-card mobile-tab active" id="tab-home">
+        <div class="welcome-icon"><i class="fa-solid fa-hand-peace"></i></div>
+        <div class="welcome-text">
+            <h2>Welcome back, ANURAG!</h2>
+            <p>Ready to farm some <strong>glory</strong> today? Head to <strong>Launch</strong> to deploy bots, or check <strong>Bots</strong> for live stats.</p>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <section class="stats">
+        <div class="stat-card">
+            <div class="stat-ic"><i class="fa-solid fa-users"></i></div>
+            <span class="stat-label">Accounts</span>
+            <div class="stat-value" id="stat-accounts">0</div>
+            <div class="stat-foot" id="stat-online">0 Online</div>
+        </div>
+        <div class="stat-card violet">
+            <div class="stat-ic"><i class="fa-solid fa-rocket"></i></div>
+            <span class="stat-label">Launched</span>
+            <div class="stat-value" id="stat-started">0</div>
+            <div class="stat-foot" id="stat-per-hour">~0 / hr</div>
+        </div>
+        <div class="stat-card lime">
+            <div class="stat-ic"><i class="fa-solid fa-gamepad"></i></div>
+            <span class="stat-label">Matches</span>
+            <div class="stat-value" id="stat-completed">0</div>
+            <div class="stat-foot" id="stat-active-matches">0 Active</div>
+        </div>
+        <div class="stat-card pink">
+            <div class="stat-ic"><i class="fa-solid fa-arrow-trend-up"></i></div>
+            <span class="stat-label">Total EXP</span>
+            <div class="stat-value" id="stat-exp">+0</div>
+            <div class="stat-foot" id="stat-exp-rate">~0 EXP/hr</div>
+        </div>
+        <div class="stat-card amber">
+            <div class="stat-ic"><i class="fa-solid fa-clock"></i></div>
+            <span class="stat-label">Uptime</span>
+            <div class="stat-value" id="stat-uptime">00:00:00</div>
+            <div class="stat-foot">Operational</div>
+        </div>
+    </section>
+
+    <!-- Quick Actions (mobile only) -->
+    <div class="quick-actions">
+        <div class="qa-title"><i class="fa-solid fa-bolt"></i> Quick Actions</div>
+        <div class="qa-grid">
+            <div class="qa-card" onclick="openCreateTeamModal()">
+                <div class="qa-card-icon"><i class="fa-solid fa-rocket"></i></div>
+                <div class="qa-card-text">
+                    <h4>Launch a Bot</h4>
+                    <p>Deploy bots to any guild, any region.</p>
+                </div>
+                <i class="fa-solid fa-chevron-right qa-card-arrow"></i>
+            </div>
+            <div class="qa-card" onclick="switchTab('accounts', document.querySelector('[data-tab=accounts]'))">
+                <div class="qa-card-icon green"><i class="fa-solid fa-robot"></i></div>
+                <div class="qa-card-text">
+                    <h4>My Bots</h4>
+                    <p>Live glory tracking for every bot.</p>
+                </div>
+                <i class="fa-solid fa-chevron-right qa-card-arrow"></i>
+            </div>
+            <div class="qa-card" onclick="switchTab('ids', document.querySelector('[data-tab=ids]')); fetchCredentials()">
+                <div class="qa-card-icon" style="background:#1e1e1e; border:1px solid rgba(255,255,255,.1)"><i class="fa-solid fa-id-card" style="color:var(--white-dim)"></i></div>
+                <div class="qa-card-text">
+                    <h4>Buy Credits</h4>
+                    <p>View and manage generated IDs.</p>
+                </div>
+                <i class="fa-solid fa-chevron-right qa-card-arrow"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Workspace -->
+    <section class="workspace">
+        <!-- Accounts -->
+        <div class="panel mobile-tab" id="tab-accounts">
+            <div class="panel-head">
+                <div class="panel-title">
+                    <div class="panel-ic"><i class="fa-solid fa-layer-group"></i></div>
+                    <h3>Bots <span class="chip" id="badge-count">0</span></h3>
+                </div>
+                <button class="btn" id="btn-pause-all" onclick="togglePauseAll()">
+                    <i class="fa-solid fa-pause"></i><span class="hide-sm"> Pause All</span>
+                </button>
+            </div>
+            <div class="controls">
+                <div class="search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input id="account-search" type="text" placeholder="Search nickname or UID..." oninput="filterAccounts()">
+                </div>
+                <div class="filters">
+                    <button class="filter active" onclick="setFilter('all',this)">All</button>
+                    <button class="filter" onclick="setFilter('in_match',this)">Match</button>
+                    <button class="filter" onclick="setFilter('online',this)">Online</button>
+                    <button class="filter" onclick="setFilter('paused',this)">Paused</button>
+                </div>
+            </div>
+            <div class="accounts-wrap" id="accounts-container">
+                <div class="empty-state">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i>
+                    <p>Initializing...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Console -->
+        <div class="panel console-panel mobile-tab" id="tab-console">
+            <div class="panel-head">
+                <div class="panel-title">
+                    <div class="panel-ic"><i class="fa-solid fa-terminal"></i></div>
+                    <h3>Live Console</h3>
+                </div>
+                <button class="btn" onclick="clearLogs()"><i class="fa-solid fa-trash"></i></button>
+            </div>
+            <div class="console-tools">
+                <div class="console-filters">
+                    <button class="cfilter active" onclick="setLogFilter('all',this)">All</button>
+                    <button class="cfilter" onclick="setLogFilter('match',this)">Match</button>
+                    <button class="cfilter" onclick="setLogFilter('success',this)">EXP</button>
+                    <button class="cfilter" onclick="setLogFilter('error',this)">Errors</button>
+                </div>
+                <button class="cfilter active" id="btn-autoscroll" onclick="toggleAutoScroll()">
+                    <i class="fa-solid fa-arrows-down-to-line"></i>
+                </button>
+            </div>
+            <div class="console-body" id="console-stream" onscroll="handleLogScroll()"></div>
+            <div class="console-foot">
+                <span class="live-tag">
+                    <span class="dot" style="width:6px;height:6px;border-radius:50%;background:var(--lime);animation:pulse 1.4s infinite;"></span>
+                    Live Stream
+                </span>
+                <span>ANURAG | x64 • Premium</span>
+            </div>
+        </div>
+
+        <!-- Stats Tab (mobile) -->
+        <div class="panel mobile-tab" id="tab-stats">
+            <div class="panel-head">
+                <div class="panel-title">
+                    <div class="panel-ic"><i class="fa-solid fa-chart-line"></i></div>
+                    <h3>Analytics</h3>
+                </div>
+            </div>
+            <div class="analytics-wrap">
+                <div class="stat-card violet">
+                    <span class="stat-label">Matches Started</span>
+                    <div class="stat-value" id="m-started">0</div>
+                    <div class="stat-foot" id="m-rate">~0 / hour</div>
+                </div>
+                <div class="stat-card lime">
+                    <span class="stat-label">Total EXP</span>
+                    <div class="stat-value" id="m-exp">+0</div>
+                    <div class="stat-foot" id="m-exp-rate">~0 EXP/hr</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">System Status</span>
+                    <div class="stat-value" style="color:var(--lime);font-size:20px">
+                        <i class="fa-solid fa-shield-halved"></i> Operational
+                    </div>
+                    <div class="stat-foot">Command Center Running</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- IDs Tab -->
+        <div class="panel mobile-tab" id="tab-ids">
+            <div class="panel-head">
+                <div class="panel-title">
+                    <div class="panel-ic"><i class="fa-solid fa-id-badge"></i></div>
+                    <h3>Generated IDs <span class="chip" id="ids-badge">0</span></h3>
+                </div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                    <button class="btn" onclick="fetchCredentials()"><i class="fa-solid fa-arrows-rotate"></i><span class="hide-sm"> Refresh</span></button>
+                    <button class="btn btn-success" onclick="downloadIdsJson()"><i class="fa-solid fa-download"></i><span class="hide-sm"> JSON</span></button>
+                    <button class="btn" style="color:var(--lime);border-color:rgba(74,222,128,.25)" onclick="downloadIdsTxt()"><i class="fa-solid fa-file-lines"></i><span class="hide-sm"> TXT</span></button>
+                </div>
+            </div>
+            <div style="padding:12px 14px 6px">
+                <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px;line-height:1.5">
+                    All generated guest accounts — UID, password, JWT, region. Keep private.
+                </div>
+                <div id="ids-container" style="display:flex;flex-direction:column;gap:8px;padding-bottom:14px">
+                    <div class="empty-state"><i class="fa-solid fa-circle-notch fa-spin"></i><p>Loading IDs...</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div><!-- /.shell -->
+
+<!-- Bottom Nav (mobile) -->
+<nav class="mobile-nav">
+    <button class="nav-btn active" data-tab="home" onclick="switchTab('home',this)">
+        <i class="fa-solid fa-house"></i>Home
+    </button>
+    <button class="nav-btn" data-tab="accounts" onclick="switchTab('accounts',this)">
+        <i class="fa-solid fa-rocket"></i>Bots
+    </button>
+    <button class="nav-btn" data-tab="stats" onclick="switchTab('stats',this)">
+        <i class="fa-solid fa-chart-pie"></i>Stats
+    </button>
+    <button class="nav-btn" data-tab="console" onclick="switchTab('console',this)">
+        <i class="fa-solid fa-terminal"></i>Console
+    </button>
+    <button class="nav-btn" data-tab="ids" onclick="switchTab('ids',this);fetchCredentials()">
+        <i class="fa-solid fa-id-badge"></i>IDs
+    </button>
+</nav>
+
+<!-- ADD ACCOUNT MODAL -->
+<div class="modal-bg" id="add-modal">
+    <div class="modal-card">
+        <div class="modal-head">
+            <h3><i class="fa-solid fa-user-plus"></i>Add Account</h3>
+            <button class="modal-close" onclick="closeAddModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form onsubmit="submitAddAccount(event)">
+            <div class="field-block">
+                <label>Login Type</label>
+                <select class="field-select" id="acc-type" onchange="toggleFormType()">
+                    <option value="guest">Guest Account (UID + Password)</option>
+                    <option value="token">Access Token</option>
+                </select>
+            </div>
+            <div id="guest-inputs">
+                <div class="field-block"><label>Guest UID</label><input id="acc-uid" class="field-input" type="text" placeholder="Enter UID" autocomplete="off"></div>
+                <div class="field-block"><label>Guest Password / Key</label><input id="acc-password" class="field-input" type="text" placeholder="Enter password" autocomplete="off"></div>
+            </div>
+            <div id="token-inputs" style="display:none">
+                <div class="field-block"><label>Access Token</label><textarea id="acc-token" class="field-textarea" placeholder="Paste access token here..."></textarea></div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn" onclick="closeAddModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-rocket"></i> Save & Start</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- CREATE TEAM MODAL -->
+<div class="modal-bg" id="team-modal">
+    <div class="modal-card">
+        <div class="modal-head">
+            <h3><i class="fa-solid fa-users-gear"></i>Create Team — Bots</h3>
+            <button class="modal-close" onclick="closeCreateTeamModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-info">
+            <i class="fa-solid fa-circle-info"></i>
+            <div>Select a <b>Region</b> and enter the <b>Clan ID</b>. New guest accounts will be created automatically, join the clan, and start Team Match together — with continuous in-match movement.</div>
+        </div>
+        <form onsubmit="submitCreateTeam(event)">
+            <div class="field-grid-2">
+                <div class="field-block">
+                    <label>Region</label>
+                    <select class="field-select" id="team-region">
+                        <option value="BD">BD — Bangladesh</option>
+                        <option value="IND">IND — India</option>
+                        <option value="ID">ID — Indonesia</option>
+                        <option value="ME">ME — Middle East</option>
+                        <option value="PK">PK — Pakistan</option>
+                        <option value="VN">VN — Vietnam</option>
+                        <option value="TH">TH — Thailand</option>
+                        <option value="TW">TW — Taiwan</option>
+                        <option value="RU">RU — Russia</option>
+                        <option value="SAC">SAC — South America</option>
+                        <option value="BR">BR — Brazil</option>
+                        <option value="NA">NA — North America</option>
+                        <option value="SG">SG — Singapore</option>
+                        <option value="US">US — United States</option>
+                    </select>
+                </div>
+                <div class="field-block">
+                    <label>Clan ID</label>
+                    <input id="team-clan" class="field-input" type="text" placeholder="e.g. 3105458988" value="3105458988">
+                </div>
+            </div>
+            <div class="field-block">
+                <label>Bot Count</label>
+                <select class="field-select" id="team-count">
+                    <option value="4" selected>4 bots (Full team)</option>
+                    <option value="3">3 bots</option>
+                    <option value="2">2 bots</option>
+                </select>
+            </div>
+            <div class="field-block">
+                <label>Password (for new accounts)</label>
+                <input id="team-password" class="field-input" type="text" value="ANURAG">
+            </div>
+            <div class="modal-progress" id="team-progress"></div>
+            <div class="modal-actions">
+                <button type="button" class="btn" onclick="closeCreateTeamModal()">Cancel</button>
+                <button type="submit" class="btn btn-success" id="btn-create-team"><i class="fa-solid fa-bolt"></i> Create & Start</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</div><!-- /#app -->
+
+<script>
+
+const ACCESS_KEY = "Kx64";
+const SESSION_KEY = "Kx64";
+
+const EXP_TABLE = {
+1:0,2:48,3:202,4:544,5:1012,6:1844,7:2792,8:3800,9:4870,10:6004,
+11:7192,12:8448,13:9760,14:11140,15:12566,16:14060,17:15610,18:17224,19:18902,20:20632,
+21:22424,22:24278,23:26192,24:28166,25:30200,26:32294,27:34448,28:37804,29:41274,30:44870,
+31:48582,32:53394,33:58566,34:64096,35:69994,36:76460,37:83506,38:91128,39:99322,40:108092,
+41:120144,42:133266,43:147472,44:162760,45:179126,46:196572,47:215368,48:235516,49:257010,50:279860,
+51:304056,52:348318,53:394982,54:444044,55:495508,56:549364,57:633756,58:721744,59:813336,60:908522,
+61:1041438,62:1180352,63:1325266,64:1476184,65:1634300,66:1840946,67:2056594,68:2281242,69:2514880,70:2757530,
+71:3059506,72:3372284,73:3699456,74:4041030,75:4397002,76:4829104,77:5282204,78:5756304,79:6251408,80:6776502,
+81:7381324,82:8043154,83:8752982,84:9510808,85:10316338,86:11277190,87:12291748,88:13360304,89:14482858,90:15659418,
+91:17026708,92:18453950,93:19941280,94:21488570,95:23095858,96:24763138,97:26490428,98:28378704,99:30124996,100:32032884
+};
+
+let cachedAccounts = [];
+let cachedLogs = [];
+let activeFilter = "all";
+let activeLogFilter = "all";
+let autoScroll = true;
+let clientStart = Date.now();
+let _statsErrorCount = 0;
+let _teamProgressTimer = null;
+
+/* ============================================
+   AUTH
+============================================ */
+function unlockApp(isRestore){
+    const sc = document.getElementById("login-screen");
+    const app = document.getElementById("app");
+    if(isRestore){
+        if(sc) sc.style.display = "none";
+        if(app) app.style.display = "block";
+        fetchStats();
+        setInterval(fetchStats, 3000);
+        return;
+    }
+    sc.style.transition = "opacity .4s";
+    sc.style.opacity = "0";
+    setTimeout(()=>{
+        sc.style.display = "none";
+        app.style.display = "block";
+        fetchStats();
+        setInterval(fetchStats, 3000);
+        toast("Welcome to Command Center, ANURAG | x64", "success");
+    }, 400);
+}
+
+(function checkSavedSession(){
+    try {
+        const saved = localStorage.getItem(SESSION_KEY);
+        if(saved === ACCESS_KEY){
+            if(document.readyState === "loading"){
+                document.addEventListener("DOMContentLoaded", ()=> unlockApp(true));
+            } else {
+                unlockApp(true);
+            }
+        }
+    } catch(e){}
+})();
+
+function login(e){
+    e.preventDefault();
+    const inp = document.getElementById("login-key");
+    const err = document.getElementById("login-error");
+    const key = inp.value.trim();
+    if(key === ACCESS_KEY){
+        err.innerText = "";
+        try { localStorage.setItem(SESSION_KEY, key); } catch(ex){}
+        unlockApp(false);
+    } else {
+        err.innerText = "✕ Invalid access key";
+        inp.value = "";
+        inp.animate([
+            {transform:"translateX(-8px)"},{transform:"translateX(8px)"},
+            {transform:"translateX(-5px)"},{transform:"translateX(0)"}
+        ], {duration:300});
+    }
+}
+
+function logoutSession(){
+    if(!confirm("Logout from this device?")) return;
+    try { localStorage.removeItem(SESSION_KEY); } catch(e){}
+    location.reload();
+}
+
+function toggleKey(){
+    const inp = document.getElementById("login-key");
+    const eye = document.getElementById("key-eye");
+    if(inp.type === "password"){ inp.type = "text"; eye.className = "fa-solid fa-eye-slash"; }
+    else { inp.type = "password"; eye.className = "fa-solid fa-eye"; }
+}
+
+/* ============================================
+   TOAST
+============================================ */
+function toast(msg, type="info"){
+    const wrap = document.getElementById("toast-wrap");
+    if(!wrap) return;
+    const t = document.createElement("div");
+    t.className = "toast " + type;
+    const icons = {success:"fa-circle-check", error:"fa-triangle-exclamation", info:"fa-circle-info"};
+    t.innerHTML = `<i class="fa-solid ${icons[type] || icons.info}"></i><span>${esc(msg)}</span>`;
+    wrap.appendChild(t);
+    setTimeout(()=>{
+        t.style.opacity = "0";
+        t.style.transform = "translateX(30px)";
+        t.style.transition = ".3s";
+        setTimeout(()=>t.remove(), 300);
+    }, 3200);
+}
+
+/* ============================================
+   ADD ACCOUNT
+============================================ */
+function openAddModal(){ document.getElementById("add-modal").classList.add("active"); }
+function closeAddModal(){ document.getElementById("add-modal").classList.remove("active"); }
+function toggleFormType(){
+    const t = document.getElementById("acc-type").value;
+    document.getElementById("guest-inputs").style.display = t === "guest" ? "block" : "none";
+    document.getElementById("token-inputs").style.display = t === "token" ? "block" : "none";
+}
+
+async function submitAddAccount(e){
+    e.preventDefault();
+    const type = document.getElementById("acc-type").value;
+    let payload = {};
+    if(type === "guest"){
+        const uid = document.getElementById("acc-uid").value.trim();
+        const pass = document.getElementById("acc-password").value.trim();
+        if(!uid || !pass){ toast("UID and password required", "error"); return; }
+        payload = {uid, password:pass};
+    } else {
+        const token = document.getElementById("acc-token").value.trim();
+        if(!token){ toast("Access token required", "error"); return; }
+        payload = {token};
+    }
+    let lastErr = null;
+    const urls = ["/api/account/add", "api/account/add", "./api/account/add"];
+    for(const u of urls){
+        try {
+            const r = await fetch(u, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload)});
+            const raw = await r.text();
+            let d;
+            try { d = JSON.parse(raw); } catch(err){ d = {status:"error", error:"Bad JSON"}; }
+            if(d.status === "ok"){
+                closeAddModal();
+                toast("Account added successfully", "success");
+                fetchStats();
+                return;
+            }
+            lastErr = d.error || ("HTTP " + r.status);
+        } catch(err){ lastErr = err.message; }
+    }
+    toast("Failed: " + (lastErr || "Network error"), "error");
+}
+
+/* ============================================
+   CREATE TEAM
+============================================ */
+function openCreateTeamModal(){
+    document.getElementById("team-modal").classList.add("active");
+    const p = document.getElementById("team-progress");
+    p.classList.remove("active");
+    p.innerHTML = "";
+    const btn = document.getElementById("btn-create-team");
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-bolt"></i> Create & Start';
+}
+
+function closeCreateTeamModal(){
+    document.getElementById("team-modal").classList.remove("active");
+    if(_teamProgressTimer){
+        clearTimeout(_teamProgressTimer);
+        _teamProgressTimer = null;
+    }
+}
+
+async function submitCreateTeam(e){
+    e.preventDefault();
+    const region = document.getElementById("team-region").value;
+    const clan   = document.getElementById("team-clan").value.trim();
+    const count  = parseInt(document.getElementById("team-count").value, 10);
+    const pwd    = document.getElementById("team-password").value.trim() || "ANURAG";
+
+    if(!clan){ toast("Clan ID is required", "error"); return; }
+
+    const btn = document.getElementById("btn-create-team");
+
+    if (_teamProgressTimer) {
+        clearTimeout(_teamProgressTimer);
+        _teamProgressTimer = null;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Starting...';
+
+    let lastErr = null;
+    let ok = false;
+    const urls = ["/api/create_team", "api/create_team", "./api/create_team"];
+
+    for(const u of urls){
+        try {
+            const r = await fetch(u, {
+                method:"POST",
+                headers:{"Content-Type":"application/json"},
+                body: JSON.stringify({region, clan_id: clan, count, password: pwd})
+            });
+            const raw = await r.text();
+            let d;
+            try { d = JSON.parse(raw); }
+            catch(err){ d = {ok:false, error:"Bad JSON"}; }
+
+            if(d.ok){ ok = true; break; }
+            lastErr = d.error || ("HTTP " + r.status);
+        } catch(err){ lastErr = err.message; }
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-bolt"></i> Create & Start';
+
+    if(!ok){
+        toast("Failed: " + (lastErr || "Network error"), "error");
+        return;
+    }
+
+    closeCreateTeamModal();
+    toast(`Creating ${count} bots in ${region}... running in background`, "success");
+
+    setTimeout(fetchStats, 3000);
+    setTimeout(fetchStats, 8000);
+    setTimeout(fetchStats, 15000);
+}
+
+function startTeamProgressPolling(){}
+
+/* ============================================
+   ACTIONS
+============================================ */
+async function deleteAccount(uid, authUid=""){
+    if(!confirm(`Remove account ${uid}?`)) return;
+    try {
+        const r = await fetch("/api/account/delete", {
+            method:"POST", headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({uid, auth_uid:authUid})
+        });
+        const d = await r.json();
+        if(d.status === "ok"){
+            toast("Account removed", "success");
+            const c = document.getElementById("acc-"+uid);
+            if(c) c.remove();
+            fetchStats();
+        } else { toast(d.error || "Delete failed", "error"); }
+    } catch(e){ toast("Network error", "error"); }
+}
+
+async function refreshAcc(uid){
+    try {
+        toast(`Refreshing ${uid}...`, "info");
+        await fetch("/api/account/refresh", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({uid})});
+        setTimeout(fetchStats, 800);
+    } catch(e){ toast("Refresh failed", "error"); }
+}
+
+async function restartAcc(uid){
+    try {
+        toast(`Restarting ${uid}...`, "info");
+        await fetch("/api/account/restart", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({uid})});
+        setTimeout(fetchStats, 800);
+    } catch(e){ toast("Restart failed", "error"); }
+}
+
+async function togglePause(uid){
+    try {
+        const r = await fetch("/api/account/pause", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({uid})});
+        const d = await r.json();
+        if(d.status === "ok"){
+            toast(d.is_paused ? `Paused ${uid}` : `Resumed ${uid}`, d.is_paused ? "info" : "success");
+            fetchStats();
+        } else { toast(d.error || "Pause failed", "error"); }
+    } catch(e){ toast("Network error", "error"); }
+}
+
+async function togglePauseAll(){
+    try {
+        const r = await fetch("/api/account/pause_all", {method:"POST"});
+        const d = await r.json();
+        if(d.status === "ok"){
+            toast(d.all_paused ? "All accounts paused" : "All accounts resumed", d.all_paused ? "info" : "success");
+            fetchStats();
+        } else { toast(d.error || "Failed", "error"); }
+    } catch(e){ toast("Network error", "error"); }
+}
+
+/* ============================================
+   FILTER
+============================================ */
+function setFilter(f, btn){
+    activeFilter = f;
+    document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));
+    if(btn) btn.classList.add("active");
+    filterAccounts();
+}
+
+function filterAccounts(){
+    const q = (document.getElementById("account-search").value || "").toLowerCase().trim();
+    document.querySelectorAll(".account-card").forEach(card=>{
+        const uid = (card.dataset.uid || "").toLowerCase();
+        const nick = (card.dataset.nick || "").toLowerCase();
+        const st = (card.dataset.status || "").toLowerCase();
+        const paused = card.dataset.paused === "1";
+        const matchSearch = !q || uid.includes(q) || nick.includes(q);
+        let matchFilter = true;
+        if(activeFilter === "in_match") matchFilter = st.includes("match") && !paused;
+        else if(activeFilter === "online") matchFilter = (st.includes("online") || st.includes("searching")) && !paused;
+        else if(activeFilter === "paused") matchFilter = paused || st.includes("paused");
+        card.style.display = matchSearch && matchFilter ? "block" : "none";
+    });
+}
+
+/* ============================================
+   RENDER ACCOUNTS
+============================================ */
+function renderAccounts(accounts){
+    const container = document.getElementById("accounts-container");
+    document.getElementById("badge-count").innerText = accounts.length;
+
+    const allPaused = accounts.length > 0 && accounts.every(a=>a.is_paused || a.status === "PAUSED");
+    const pb = document.getElementById("btn-pause-all");
+    pb.innerHTML = allPaused
+        ? '<i class="fa-solid fa-play"></i><span class="hide-sm"> Resume All</span>'
+        : '<i class="fa-solid fa-pause"></i><span class="hide-sm"> Pause All</span>';
+
+    if(accounts.length === 0){
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fa-solid fa-ghost"></i>
+                <p>No accounts yet</p>
+                <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+                    <button class="btn btn-success" onclick="openCreateTeamModal()"><i class="fa-solid fa-users-gear"></i> Create Team</button>
+                    <button class="btn btn-primary" onclick="openAddModal()"><i class="fa-solid fa-plus"></i> Add Account</button>
+                </div>
+            </div>`;
+        return;
+    }
+
+    if(container.querySelector(".empty-state")) container.innerHTML = "";
+
+    const uids = new Set(accounts.map(a=>String(a.uid)));
+    container.querySelectorAll(".account-card").forEach(c=>{
+        if(!uids.has(c.dataset.uid)) c.remove();
+    });
+
+    accounts.forEach(acc=>{
+        const uid = String(acc.uid);
+        const level = Math.max(1, parseInt(acc.level) || 1);
+        const nextLvl = Math.min(100, level + 1);
+        const baseExp = EXP_TABLE[level] ?? 0;
+        const targetExp = EXP_TABLE[nextLvl] ?? baseExp + 50000;
+        const needed = Math.max(1, targetExp - baseExp);
+        const curExp = Number(acc.current_exp || 0);
+        const earned = Math.max(0, curExp - baseExp);
+        const remaining = Math.max(0, targetExp - curExp);
+        const pct = level >= 100 ? 100 : Math.min(100, Math.max(0, earned / needed * 100));
+
+        const paused = Boolean(acc.is_paused || acc.status === "PAUSED");
+        const status = paused ? "PAUSED" : (acc.status || "ONLINE");
+
+        let cls = "status-online";
+        if(paused) cls = "status-paused";
+        else if(status === "IN_MATCH") cls = "status-match";
+        else if(status === "SEARCHING") cls = "status-search";
+        else if(status !== "ONLINE") cls = "status-error";
+
+        const stText = paused
+            ? "PAUSED"
+            : status === "IN_MATCH"
+            ? `IN MATCH (${acc.active_matches || 1})`
+            : status;
+
+        let card = document.getElementById("acc-" + uid);
+        if(!card){
+            card = document.createElement("div");
+            card.id = "acc-" + uid;
+            card.className = "account-card";
+            container.appendChild(card);
+        }
+
+        card.dataset.uid = uid;
+        card.dataset.nick = acc.nickname || "";
+        card.dataset.status = cls.replace("status-", "");
+        card.dataset.paused = paused ? "1" : "0";
+
+        card.innerHTML = `
+            <div class="acc-head">
+                <div class="acc-id">
+                    <div class="acc-avatar">
+                        <div class="acc-avatar-ring"></div>
+                        <div class="acc-avatar-core"><i class="fa-solid fa-gamepad"></i></div>
+                        <span class="acc-level">L${level}</span>
+                    </div>
+                    <div style="min-width:0">
+                        <div class="acc-name">${esc(acc.nickname || "Unknown")} <span class="acc-region">${esc(acc.region || "BD")}</span></div>
+                        <div class="acc-uid">
+                            <span>UID: ${esc(uid)}</span>
+                            <button class="copy-btn" onclick="copyUid('${escAttr(uid)}')" title="Copy"><i class="fa-regular fa-copy"></i></button>
+                            <span class="acc-uptime" data-uid="${escAttr(uid)}" data-uptime="${Math.floor(acc.uptime_seconds || 0)}" data-paused="${paused ? 1 : 0}">
+                                <i class="fa-solid fa-stopwatch"></i> ${fmtDur(acc.uptime_seconds || 0)}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-pill ${cls}"><span class="sdot"></span>${stText}</div>
+            </div>
+            <div class="acc-metrics">
+                <div class="metric-box"><span>Initial</span><strong>${Number(acc.initial_exp || 0).toLocaleString()}</strong></div>
+                <div class="metric-box"><span>Current</span><strong>${curExp.toLocaleString()}</strong></div>
+                <div class="metric-box gain"><span>Gained</span><strong>+${Number(acc.gained_exp || 0).toLocaleString()}</strong></div>
+            </div>
+            <div class="progress-block">
+                <div class="progress-top">
+                    <span>LEVEL ${level} → <b>L${nextLvl}</b></span>
+                    <b>${remaining.toLocaleString()} EXP LEFT</b>
+                </div>
+                <div class="progress-track"><div class="progress-fill" style="width:${pct.toFixed(1)}%"></div></div>
+                <div class="progress-bot">
+                    <span>${earned.toLocaleString()} / ${needed.toLocaleString()}</span>
+                    <span class="pct">${pct.toFixed(1)}%</span>
+                </div>
+            </div>
+            <div class="acc-foot">
+                <span class="acc-time"><i class="fa-regular fa-clock"></i> ${esc(acc.last_match_time || "Running...")}</span>
+                <div class="acc-actions">
+                    <button class="act-btn" onclick="togglePause('${escAttr(uid)}')" title="${paused ? "Resume" : "Pause"}">
+                        <i class="fa-solid ${paused ? "fa-play" : "fa-pause"}"></i>
+                    </button>
+                    <button class="act-btn" onclick="restartAcc('${escAttr(uid)}')" title="Restart"><i class="fa-solid fa-rotate-right"></i></button>
+                    <button class="act-btn" onclick="refreshAcc('${escAttr(uid)}')" title="Refresh"><i class="fa-solid fa-arrows-rotate"></i></button>
+                    <button class="act-btn danger" onclick="deleteAccount('${escAttr(uid)}', '${escAttr(acc.auth_uid || "")}')" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>`;
+    });
+
+    filterAccounts();
+}
+
+/* ============================================
+   LOGS
+============================================ */
+function setLogFilter(f, btn){
+    activeLogFilter = f;
+    document.querySelectorAll(".cfilter").forEach(x=>{
+        if(x.id !== "btn-autoscroll") x.classList.remove("active");
+    });
+    if(btn) btn.classList.add("active");
+    renderLogs(cachedLogs);
+}
+
+function renderLogs(logs){
+    const stream = document.getElementById("console-stream");
+    let list = logs || [];
+    if(activeLogFilter === "match"){
+        list = list.filter(l => String(l.message || "").toLowerCase().includes("match"));
+    } else if(activeLogFilter === "success"){
+        list = list.filter(l => l.level === "success" || String(l.message || "").includes("EXP"));
+    } else if(activeLogFilter === "error"){
+        list = list.filter(l => l.level === "error" || l.level === "warning");
+    }
+    stream.innerHTML = list.map(l=>`
+        <div class="log-line">
+            <span class="log-ts">[${esc(l.time || "00:00:00")}]</span>
+            <span class="log-msg ${l.level || "info"}">${esc(l.message || "")}</span>
+        </div>
+    `).join("");
+    if(autoScroll) stream.scrollTop = stream.scrollHeight;
+}
+
+async function clearLogs(){
+    try {
+        await fetch("/api/logs/clear", {method:"POST"});
+        cachedLogs = [];
+        renderLogs([]);
+        toast("Console cleared", "info");
+    } catch(e){ toast("Clear failed", "error"); }
+}
+
+function toggleAutoScroll(){
+    autoScroll = !autoScroll;
+    document.getElementById("btn-autoscroll").classList.toggle("active", autoScroll);
+    if(autoScroll) document.getElementById("console-stream").scrollTop = 999999;
+}
+
+function handleLogScroll(){
+    const s = document.getElementById("console-stream");
+    if(s.scrollHeight - s.scrollTop - s.clientHeight > 80) autoScroll = false;
+}
+
+/* ============================================
+   FETCH STATS
+============================================ */
+async function fetchStats(){
+    const urls = ["/api/stats", "api/stats", "./api/stats"];
+    let d = null;
+    let lastErr = null;
+
+    for(const u of urls){
+        try {
+            const r = await fetch(u, {method:"GET", headers:{"Accept":"application/json"}, cache:"no-store"});
+            const raw = await r.text();
+            if(r.ok){
+                try { d = JSON.parse(raw); _statsErrorCount = 0; break; }
+                catch(e){ lastErr = "Bad JSON: " + raw.slice(0, 80); }
+            } else { lastErr = "HTTP " + r.status; }
+        } catch(err){ lastErr = err.message; }
+    }
+
+    if(!d){
+        _statsErrorCount++;
+        if(_statsErrorCount <= 1){
+            console.error("[STATS] Failed:", lastErr);
+            const c = document.getElementById("accounts-container");
+            if(c && !c.querySelector(".account-card")){
+                c.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-triangle-exclamation" style="color:var(--red)"></i>
+                        <p>Cannot reach backend API</p>
+                        <p style="font-size:10px;color:var(--text-muted);margin-top:4px">Error: ${esc(lastErr || "unknown")}</p>
+                    </div>`;
+            }
+        }
+        return;
+    }
+
+    try {
+        const accs = Array.isArray(d.accounts) ? d.accounts : [];
+        const logs = Array.isArray(d.logs) ? d.logs : [];
+
+        setText("stat-accounts", d.total_accounts ?? accs.length);
+        setText("stat-started", d.total_matches_started || 0);
+        setText("stat-completed", d.total_matches || 0);
+        setText("stat-exp", "+" + Number(d.total_gained_exp || 0).toLocaleString());
+        setText("stat-active-matches", (d.total_active_matches || 0) + " Active");
+
+        const online = accs.filter(a => a.status === "ONLINE" || a.status === "IN_MATCH").length;
+        setText("stat-online", online + " Online");
+
+        const uptimeH = Math.max(0.016, (d.uptime || 60) / 3600);
+        const perH = Math.round((d.total_matches_started || 0) / uptimeH);
+        setText("stat-per-hour", "~" + perH + " / hr");
+        setText("stat-exp-rate", "~" + Number(d.exp_per_hour || 0).toLocaleString() + " EXP/hr");
+
+        setText("m-started", d.total_matches_started || 0);
+        setText("m-rate", "~" + perH + " / hour");
+        setText("m-exp", "+" + Number(d.total_gained_exp || 0).toLocaleString());
+        setText("m-exp-rate", "~" + Number(d.exp_per_hour || 0).toLocaleString() + " EXP/hr");
+
+        cachedAccounts = accs;
+        cachedLogs = logs;
+
+        renderAccounts(accs);
+        renderLogs(logs);
+    } catch(err){
+        console.error("[STATS RENDER]", err);
+    }
+}
+
+/* ============================================
+   HELPERS
+============================================ */
+function copyUid(uid){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(uid).then(()=> toast("UID copied: " + uid, "success"));
+    } else { toast("UID: " + uid, "info"); }
+}
+
+function switchTab(name, btn){
+    document.querySelectorAll(".nav-btn").forEach(x=>x.classList.remove("active"));
+    if(btn) btn.classList.add("active");
+    document.querySelectorAll(".mobile-tab").forEach(x=>x.classList.remove("active"));
+    const el = document.getElementById("tab-" + name);
+    if(el) el.classList.add("active");
+}
+
+function setText(id, v){
+    const el = document.getElementById(id);
+    if(el) el.innerText = v ?? "";
+}
+
+function esc(s){
+    if(s === null || s === undefined) return "";
+    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+}
+function escAttr(s){ return esc(s); }
+
+function fmtDur(sec){
+    sec = Math.max(0, Math.floor(Number(sec) || 0));
+    const h = Math.floor(sec / 3600);
+    const m = Math.floor((sec % 3600) / 60);
+    const s = sec % 60;
+    if(h > 0) return `${h}h ${String(m).padStart(2,"0")}m`;
+    return `${String(m).padStart(2,"0")}m ${String(s).padStart(2,"0")}s`;
+}
+
+function manualRefresh(){ fetchStats(); toast("Command Center refreshed", "info"); }
+
+/* ============================================
+   UPTIME
+============================================ */
+setInterval(()=>{
+    const el = Math.floor((Date.now() - clientStart) / 1000);
+    const h = String(Math.floor(el / 3600)).padStart(2, "0");
+    const m = String(Math.floor((el % 3600) / 60)).padStart(2, "0");
+    const s = String(el % 60).padStart(2, "0");
+    setText("stat-uptime", `${h}:${m}:${s}`);
+    document.querySelectorAll(".acc-uptime").forEach(u=>{
+        if(u.dataset.paused === "1") return;
+        let v = parseInt(u.dataset.uptime || "0") + 1;
+        u.dataset.uptime = v;
+        u.innerHTML = `<i class="fa-solid fa-stopwatch"></i>${fmtDur(v)}`;
+    });
+}, 1000);
+
+document.getElementById("login-key").addEventListener("keydown", e=>{
+    if(e.key === "Enter") login(e);
+});
+
+document.addEventListener("keydown", e => {
+    if(e.key === "Escape"){
+        document.getElementById("add-modal").classList.remove("active");
+        closeCreateTeamModal();
+    }
+});
+
+document.querySelectorAll(".modal-bg").forEach(m => {
+    m.addEventListener("click", e => {
+        if(e.target === m) m.classList.remove("active");
+    });
+});
+
+/* ============================================
+   IDs INFO TAB
+============================================ */
+let _cachedCredentials = [];
+
+async function fetchCredentials(){
+    const container = document.getElementById("ids-container");
+    const badge = document.getElementById("ids-badge");
+    if(!container) return;
+    container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-circle-notch fa-spin"></i><p>Loading...</p></div>`;
+    const urls = ["/api/account/credentials","api/account/credentials","./api/account/credentials"];
+    let d = null;
+    for(const u of urls){
+        try{
+            const r = await fetch(u,{cache:"no-store"});
+            if(r.ok){ d = await r.json(); break; }
+        }catch(e){}
+    }
+    if(!d || !d.ok || !Array.isArray(d.credentials) || d.credentials.length === 0){
+        container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-ghost"></i><p>No generated accounts yet</p><p style="font-size:10px;color:var(--text-muted);margin-top:4px">Create bots first using the Team button</p></div>`;
+        if(badge) badge.innerText = "0";
+        return;
+    }
+    _cachedCredentials = d.credentials;
+    if(badge) badge.innerText = d.credentials.length;
+    container.innerHTML = "";
+    d.credentials.forEach((c, idx) => {
+        const div = document.createElement("div");
+        div.className = "id-card";
+        const jwtFull = c.jwt_token || "";
+        const jwtPrev = c.jwt_preview || jwtFull.slice(0,60) + (jwtFull.length > 60 ? "..." : "");
+        div.innerHTML = `
+            <div class="id-card-num">#${idx+1}</div>
+            <div class="id-card-head">
+                <div class="id-card-title"><i class="fa-solid fa-gamepad"></i> ${esc(c.nickname || "Unknown")}</div>
+                <div class="id-card-region">${esc(c.region || "BD")}</div>
+            </div>
+            <div class="id-field">
+                <div class="id-label">Auth UID</div>
+                <div class="id-value">${esc(c.auth_uid)}<button class="copy-btn act-btn" title="Copy" onclick="copyField('${escAttr(c.auth_uid)}','Auth UID')"><i class="fa-regular fa-copy"></i></button></div>
+            </div>
+            <div class="id-field">
+                <div class="id-label">Password</div>
+                <div class="id-value">${esc(c.auth_password)}<button class="copy-btn act-btn" title="Copy" onclick="copyField('${escAttr(c.auth_password)}','Password')"><i class="fa-regular fa-copy"></i></button></div>
+            </div>
+            <div class="id-field">
+                <div class="id-label">Account UID</div>
+                <div class="id-value">${esc(c.account_id)}<button class="copy-btn act-btn" title="Copy" onclick="copyField('${escAttr(c.account_id)}','Account UID')"><i class="fa-regular fa-copy"></i></button></div>
+            </div>
+            <div class="id-field">
+                <div class="id-label">JWT Token</div>
+                <div class="id-value" style="flex-direction:column;gap:2px">
+                    <div class="jwt-preview">${esc(jwtPrev)}</div>
+                    <button class="copy-btn act-btn" style="align-self:flex-start;margin-top:2px" title="Copy full JWT" onclick="copyField('${escAttr(jwtFull)}','JWT Token')"><i class="fa-regular fa-copy"></i> Copy Full</button>
+                </div>
+            </div>
+            <div class="id-field">
+                <div class="id-label">MajorLogin</div>
+                <div class="id-value" style="flex-direction:column;gap:2px">
+                    <div style="font-size:9.5px;color:var(--text-muted)">Field 1 (acc_id): <span style="color:var(--text)">${esc(c.account_id)}</span></div>
+                    <div style="font-size:9.5px;color:var(--text-muted)">Field 2 (region): <span style="color:var(--text)">${esc(c.region)}</span></div>
+                    <div style="font-size:9.5px;color:var(--text-muted)">Field 8 (JWT): <span style="color:var(--blue)">${esc((c.jwt_token||"").slice(0,30)+"...")}</span></div>
+                    <div style="font-size:9.5px;color:var(--text-muted)">Field 10 (server): <span style="color:var(--text)">${esc(c.server_url)}</span></div>
+                    <div style="font-size:9.5px;color:var(--text-muted)">Field 21 (srv_time): <span style="color:var(--text)">${esc(c.server_time)}</span></div>
+                </div>
+            </div>
+            <div class="id-field">
+                <div class="id-label">Open ID</div>
+                <div class="id-value">${esc(c.open_id)}<button class="copy-btn act-btn" title="Copy" onclick="copyField('${escAttr(c.open_id)}','Open ID')"><i class="fa-regular fa-copy"></i></button></div>
+            </div>
+            <div class="id-field">
+                <div class="id-label">Access Token</div>
+                <div class="id-value" style="flex-direction:column;gap:2px">
+                    <div class="jwt-preview">${esc((c.access_token||"").slice(0,60)+(c.access_token&&c.access_token.length>60?"...":""))}</div>
+                    <button class="copy-btn act-btn" style="align-self:flex-start;margin-top:2px" title="Copy" onclick="copyField('${escAttr(c.access_token)}','Access Token')"><i class="fa-regular fa-copy"></i> Copy</button>
+                </div>
+            </div>
+            <div class="id-field">
+                <div class="id-label">Version</div>
+                <div class="id-value" style="flex-direction:column;gap:1px">
+                    <span>Release: ${esc(c.release_version)}</span>
+                    <span style="color:var(--text-muted)">Client: ${esc(c.client_version)}</span>
+                </div>
+            </div>
+            <div class="id-field">
+                <div class="id-label">Server URL</div>
+                <div class="id-value">${esc(c.server_url)}<button class="copy-btn act-btn" title="Copy" onclick="copyField('${escAttr(c.server_url)}','Server URL')"><i class="fa-regular fa-copy"></i></button></div>
+            </div>
+            <div class="id-field">
+                <div class="id-label">Registered</div>
+                <div class="id-value">Lvl ${esc(String(c.level))} • ${esc(c.region)} • ${esc(c.auth_type)}</div>
+            </div>`;
+        container.appendChild(div);
+    });
+}
+
+function copyField(val, label){
+    if(!val){ toast("Nothing to copy","error"); return; }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(val).then(()=> toast((label||"Value")+" copied","success"));
+    } else { toast((label||"Value")+": "+val.slice(0,40),"info"); }
+}
+
+function downloadIdsJson(){
+    if(!_cachedCredentials.length){ toast("No data to download — refresh first","error"); return; }
+    const blob = new Blob([JSON.stringify(_cachedCredentials, null, 2)], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "generated_ids.json"; a.click();
+    URL.revokeObjectURL(url);
+    toast("Downloaded generated_ids.json","success");
+}
+
+function downloadIdsTxt(){
+    if(!_cachedCredentials.length){ toast("No data to download — refresh first","error"); return; }
+    const lines = _cachedCredentials.map((c,i) => {
+        return [
+            `=== Account #${i+1} — ${c.nickname} (${c.region}) ===`,
+            `Auth UID:        ${c.auth_uid}`,
+            `Password:        ${c.auth_password}`,
+            `Account UID:     ${c.account_id}`,
+            `Open ID:         ${c.open_id}`,
+            `Access Token:    ${c.access_token}`,
+            `JWT Token:       ${c.jwt_token}`,
+            `Server URL:      ${c.server_url}`,
+            `Server Time:     ${c.server_time}`,
+            `Release Version: ${c.release_version}`,
+            `Client Version:  ${c.client_version}`,
+            `Region:          ${c.region}`,
+            `Level:           ${c.level}`,
+            `Platform:        ${c.platform}`,
+            `Auth Type:       ${c.auth_type}`,
+            `--- MajorLogin Fields ---`,
+            `  Field 1  (account_id):  ${c.account_id}`,
+            `  Field 2  (region):      ${c.region}`,
+            `  Field 8  (jwt):         ${c.jwt_token}`,
+            `  Field 10 (server_url):  ${c.server_url}`,
+            `  Field 21 (server_time): ${c.server_time}`,
+            ``
+        ].join("\n");
+    });
+    const blob = new Blob([lines.join("\n")], {type:"text/plain"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "generated_ids.txt"; a.click();
+    URL.revokeObjectURL(url);
+    toast("Downloaded generated_ids.txt","success");
+}
+
+</script>
+</body>
+</html>
